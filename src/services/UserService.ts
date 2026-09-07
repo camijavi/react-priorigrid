@@ -2,10 +2,10 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, up
 import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
 import type { UserModel } from "../models/UserModel";
 import { auth, db } from "../firebase"
-import firebase from "firebase/compat/app";
+
 
 export class UserService {
-    private static USER_COLLECTION = 'user';
+    private static USERS_COLLECTION = 'user';
 
     /**
      * @param email
@@ -25,7 +25,7 @@ export class UserService {
             email,
         };
 
-        const userDocRef = doc(db, this.USER_COLLECTION, firebaseUser.uid);
+        const userDocRef = doc(db, this.USERS_COLLECTION, firebaseUser.uid);
         await setDoc(userDocRef, userProfile);
 
         return userProfile;
@@ -47,11 +47,39 @@ export class UserService {
 
         const fallbackProfile: UserModel = {
             id: firebaseUser.uid,
-            username: firebaseUser.displayName || email.split('@')[0],
+            username: firebaseUser.displayName || email.split("@")[0],
             email: firebaseUser.email || email,
+        };
+
+        return fallbackProfile;
+    }
+
+    static async logout(): Promise<void> {
+        await signOut(auth);
+    }
+
+    static async getUserById(uid: string): Promise<UserModel | null> {
+        const userDocRef = doc(db, this.USERS_COLLECTION, uid);
+        const docSnap = await getDoc(userDocRef);
+
+        if (!docSnap.exists()) {
+            return null;
         }
 
+        const data = docSnap.data();
+        return {
+            id: docSnap.id,
+            username: data.username,
+            email: data.email,
+        }
     }
+
+    static async updateUserProfile(uid: string, data: Partial<Omit<UserModel, "id">>): Promise<void> {
+        const userDocRef = doc(db, this.USERS_COLLECTION, uid);
+        await updateDoc(userDocRef, data)
+    }
+
+
 
 
 
