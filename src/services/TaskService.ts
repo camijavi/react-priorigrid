@@ -76,6 +76,16 @@ export class TaskService {
         return querySnapshot.docs.map((docSnap) => this.formatTaskDoc(docSnap.id, docSnap.data()));
     }
 
+    static async getTaskById(taskId: string): Promise<TaskModel | null> {
+        const taskDocRef = doc(db, this.TASKS_COLLECTION, taskId);
+        const docSnap = await getDoc(taskDocRef);
+
+        if (!docSnap.exists()) {
+            return null;
+        }
+
+        return this.formatTaskDoc(docSnap.id, docSnap.data());
+    }
 
 
 }
