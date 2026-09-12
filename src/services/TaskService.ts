@@ -102,6 +102,32 @@ export class TaskService {
         const taskDocRef = doc(db, this.TASKS_COLLECTION, taskId);
         await deleteDoc(taskDocRef)
     }
+
+    static async getTaskByQuadrant(userId: string, quadrant: TaskQuadrant): Promise<TaskModel[]> {
+        const tasksRef = collection(db, this.TASKS_COLLECTION);
+        const q = query(
+            tasksRef,
+            where("userId", "==", userId),
+            where("quadrant", "==", quadrant),
+            orderBy("position", "asc")
+        )
+
+        const querySnapshot = await getDocs(q)
+        return querySnapshot.docs.map((docSnap) => this.formatTaskDoc(docSnap.id, docSnap.data()));
+    }
+
+    static async getTasksByStatus(userId: string, status: TaskStatus): Promise<TaskModel[]> {
+        const tasksRef = collection(db, this.TASKS_COLLECTION);
+        const q = query(
+            tasksRef,
+            where("userId", "==", userId),
+            where("status", "==", status),
+            orderBy("position", "asc")
+        )
+
+        const querySnapshot = await getDocs(q);
+        return querySnapshot.docs.map((docSnap) => this.formatTaskDoc(docSnap.id, docSnap.data()));
+    }
 }
 
 
