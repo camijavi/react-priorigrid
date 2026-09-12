@@ -87,7 +87,21 @@ export class TaskService {
         return this.formatTaskDoc(docSnap.id, docSnap.data());
     }
 
+    static async updateTask(taskId: string, data: Partial<Omit<TaskModel, "id">>): Promise<void> {
+        const taskDocRef = doc(db, this.TASKS_COLLECTION, taskId);
 
+        const updateData: Record<string, any> = { ...data };
+        if (data.dueDate) {
+            updateData.dueDate = Timestamp.fromDate(new Date(data.dueDate));
+
+            await updateDoc(taskDocRef, updateData);
+        }
+    }
+
+    static async deleteTask(taskId: string): Promise<void> {
+        const taskDocRef = doc(db, this.TASKS_COLLECTION, taskId);
+        await deleteDoc(taskDocRef)
+    }
 }
 
 
