@@ -1,11 +1,28 @@
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, updateProfile, type User } from "firebase/auth";
-import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
+import { collection, query, where, getDocs, doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
 import type { UserModel } from "../models/UserModel";
 import { auth, db } from "../firebase"
 
 
 export class UserService {
-    private static USERS_COLLECTION = 'user';
+    private static USERS_COLLECTION = 'users';
+
+    static async isUsernameExists(username: string): Promise<boolean> {
+        if (!username.trim()) return false;
+        const usersRef = collection(db, this.USERS_COLLECTION);
+        const q = query(usersRef, where("username", "==", username.trim()));
+        const querySnapshot = await getDocs(q);
+        return !querySnapshot.empty
+    }
+
+    static async isEmailExists(email: string): Promise<boolean> {
+        if (!email.trim()) return false;
+        const usersRef = collection(db, this.USERS_COLLECTION);
+        const q = query(usersRef, where("email", "==", email.trim()));
+        const querySnapshot = await getDocs(q);
+        return !querySnapshot.empty
+    }
+
 
     /**
      * @param email
