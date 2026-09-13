@@ -12,6 +12,7 @@ import { UserService } from "./services/UserService";
 import type { UserModel } from "./models/UserModel";
 
 import SignUpScreen from "./auth/SignUpScreen";
+import SignInScreen from "./auth/SignInScreen";
 import DashboardScreen from "./pages/DashboardScreen";
 
 // ProtectedRoute Wrapper Component
@@ -150,7 +151,7 @@ function AppContent() {
         }
       />
 
-      {/* <Route
+      <Route
         path="/signin"
         element={
           isAuthenticated ? (
@@ -162,7 +163,7 @@ function AppContent() {
             />
           )
         }
-      /> */}
+      />
 
       <Route
         path="/dashboard"
