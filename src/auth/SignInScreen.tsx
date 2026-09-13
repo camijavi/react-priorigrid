@@ -1,11 +1,7 @@
-import React from 'react'
+import React from "react";
 
 const SignInScreen = () => {
-  return (
-    <div>
-      
-    </div>
-  )
-}
+  return <div></div>;
+};
 
-export default SignInScreen
+export default SignInScreen;

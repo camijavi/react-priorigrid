@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { UserService } from "../services/UserService";
 import type { UserModel } from "../models/UserModel";
-import navarroLogo from "../assets/navarro-logo.png";
+import navarroLogo from "../assets/navarroweb-logo.png";
 
 interface SignUpScreenProps {
   onSuccess?: (user: UserModel) => void;

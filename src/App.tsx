@@ -1,14 +1,20 @@
-import React, {useState, useEffect} from "react"
-import {BrowserRouter as Router, Routes, Route, Navigate, useNavigate} from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  useNavigate,
+} from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
-import {auth} from "./firebase";
+import { auth } from "./firebase";
 import { UserService } from "./services/UserService";
 import type { UserModel } from "./models/UserModel";
+
 import SignUpScreen from "./auth/SignUpScreen";
-import SignInScreen from "./auth/SignInScreen";
 import DashboardScreen from "./pages/DashboardScreen";
 
-
+// ProtectedRoute Wrapper Component
 interface ProtectedRouteProps {
   isAuthenticated: boolean;
   loading: boolean;
@@ -16,66 +22,180 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
-  isAuthenticated, loading, children
-}) =>{
-  if(loading){
-    return(
-      <div 
-      className="min-h-screen w-full flex items-center justify-center p-4 font-sans text-gray-800"
-      style={{background: "linear-gradient(135deg, #ffea85 0%, #ff7e5f 35%, #feb47b 65%, #ff416c 100%)"}}
+  isAuthenticated,
+  loading,
+  children,
+}) => {
+  if (loading) {
+    return (
+      <div
+        className="min-h-screen w-full flex items-center justify-center p-4 font-sans text-gray-800"
+        style={{
+          background:
+            "linear-gradient(135deg, #ffea85 0%, #ff7e5f 35%, #feb47b 65%, #ff416c 100%)",
+        }}
       >
-        <div 
-            className="p-8 rounded-2xl flex flex-col items-center gap-4 text-white"
-            style={{
-              background: "rgba(255, 255, 255, 0.23)",
-              borderRadius: "16px",
-              boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
-              backdropFilter: "blur(3.4px)",
-              WebkitBackdropFilter: "blur(3.4px)",
-              border: "1px solid rgba(255, 255, 255, 0.51)",
+        <div
+          className="p-8 rounded-2xl flex flex-col items-center gap-4 text-white"
+          style={{
+            background: "rgba(255, 255, 255, 0.23)",
+            borderRadius: "16px",
+            boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
+            backdropFilter: "blur(3.4px)",
+            WebkitBackdropFilter: "blur(3.4px)",
+            border: "1px solid rgba(255, 255, 255, 0.51)",
           }}
         >
           <svg
-          className="animate-spin h-8 w-8 text-white"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
+            className="animate-spin h-8 w-8 text-white"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
           >
-           <circle
+            <circle
               className="opacity-25"
               cx="12"
               cy="12"
               r="10"
               stroke="currentColor"
               strokeWidth="4"
-           ></circle>
-           <path
+            ></circle>
+            <path
               className="opacity-75"
               fill="currentColor"
               d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-           ></path>  
+            ></path>
           </svg>
-          <p className="font-semibold text-sm">Authenticating...</p>          
+          <p className="font-semibold text-sm">Authenticating...</p>
         </div>
       </div>
     );
   }
 
-  if(!isAuthenticated){
-    return <Navigate to="/signup" replace/>
+  if (!isAuthenticated) {
+    return <Navigate to="/signup" replace />;
   }
 
-  return <>{children}</>
-}
+  return <>{children}</>;
+};
 
+// App navigation content
+function AppContent() {
+  const [currentUser, setCurrentUser] = useState<UserModel | null>(null);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        try {
+          const profile = await UserService.getUserById(firebaseUser.uid);
+          if (profile) {
+            setCurrentUser(profile);
+          } else {
+            setCurrentUser({
+              id: firebaseUser.uid,
+              username:
+                firebaseUser.displayName ||
+                firebaseUser.email?.split("@")[0] ||
+                "User",
+              email: firebaseUser.email || "",
+            });
+          }
+        } catch (err) {
+          console.error("Error loading user profile:", err);
+          setCurrentUser({
+            id: firebaseUser.uid,
+            username:
+              firebaseUser.displayName ||
+              firebaseUser.email?.split("@")[0] ||
+              "User",
+            email: firebaseUser.email || "",
+          });
+        }
+      } else {
+        setCurrentUser(null);
+      }
+      setLoading(false);
+    });
 
-export default function App() {
+    return () => unsubscribe();
+  }, []);
+
+  const handleLoginOrRegisterSuccess = (user: UserModel) => {
+    setCurrentUser(user);
+    navigate("/dashboard");
+  };
+
+  const handleLogout = () => {
+    setCurrentUser(null);
+    navigate("/signup");
+  };
+
+  const isAuthenticated = !!currentUser;
 
   return (
-    <>
-       <div>Priori Grid </div>
-    </>
-  )
+    <Routes>
+      <Route
+        path="/signup"
+        element={
+          isAuthenticated ? (
+            <Navigate to="/dashboard" replace />
+          ) : (
+            <SignUpScreen
+              onSuccess={handleLoginOrRegisterSuccess}
+              onNavigateToLogin={() => navigate("/signin")}
+            />
+          )
+        }
+      />
+
+      {/* <Route
+        path="/signin"
+        element={
+          isAuthenticated ? (
+            <Navigate to="/dashboard" replace />
+          ) : (
+            <SignInScreen
+              onSuccess={handleLoginOrRegisterSuccess}
+              onNavigateToSignUp={() => navigate("/signup")}
+            />
+          )
+        }
+      /> */}
+
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute isAuthenticated={isAuthenticated} loading={loading}>
+            <DashboardScreen user={currentUser} onLogout={handleLogout} />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Default Catch-all Route */}
+      <Route
+        path="*"
+        element={
+          loading ? (
+            <ProtectedRoute isAuthenticated={isAuthenticated} loading={loading}>
+              <DashboardScreen user={currentUser} onLogout={handleLogout} />
+            </ProtectedRoute>
+          ) : isAuthenticated ? (
+            <Navigate to="/dashboard" replace />
+          ) : (
+            <Navigate to="/signup" replace />
+          )
+        }
+      />
+    </Routes>
+  );
 }
 
+export default function App() {
+  return (
+    <Router>
+      <AppContent />
+    </Router>
+  );
+}
