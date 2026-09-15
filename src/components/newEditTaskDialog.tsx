@@ -41,6 +41,33 @@ const QUADRAN_PSOITION_MAP: Record<TaskQuadrant, number> = {
     return d.toISOString().split("T")[0];
   };
 
+  useEffect(() => {
+    if(isOpen) {
+      setErrors({});
+      if(taskToEdit) {
+        setTitle(taskToEdit.title || "");
+        setDescription(taskToEdit.description || "");
+        setStatus(taskToEdit.status || "pending");
+        setQuadrant(taskToEdit.quadrant || "importantUrgent");
+        setDueDate(
+          taskToEdit.dueDate
+              ? formatDateToInput(new Date (taskToEdit.dueDate))
+              : new Date().toISOString().split("T")[0]
+        );
+      } else {
+        setTitle("");
+        setDescription("");
+        setStatus("pending");
+        setQuadrant("importantUrgent");
+        setDueDate(new Date().toISOString().split("T")[0]);
+      }
+    }
+  }, [isOpen, taskToEdit]);
+
+  if (!isOpen) return null;
+
+  const currentPosition = QUADRAN_PSOITION_MAP[quadrant] || 1;
+
   return (
     <div>newEditTaskDialog</div>
   )
