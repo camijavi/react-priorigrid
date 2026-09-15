@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { UserService } from "../services/UserService";
 import type { UserModel } from "../models/UserModel";
 import prioriGridLogo from "../assets/prioriGridLogo.png"
+import type  { TaskModel } from "../models/TaskModel";
 
 interface DashboardScreenProps {
     user?: UserModel | null;
@@ -9,7 +10,12 @@ interface DashboardScreenProps {
 }
 
 export const DashboardScreen: React.FC<DashboardScreenProps> = ({ user, onLogout }) => {
-    
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [taskToEdit, setTaskToEdit] = useState<TaskModel | null>(null);
+    const [tasks, setTasks] = useState<TaskModel[]>([]);
+    const [isLoadingTasks, setIsLoadingTasks] = useState(false);
+
+
     
     const handleSignOut = async () => {
         try{

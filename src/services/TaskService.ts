@@ -8,7 +8,6 @@ import {
     deleteDoc,
     query,
     where,
-    orderBy,
     Timestamp
 } from "firebase/firestore";
 import type { TaskModel, TaskQuadrant, TaskStatus } from "../models/TaskModel";
@@ -68,12 +67,12 @@ export class TaskService {
 
         const q = query(
             tasksRef,
-            where("userId", "==", userId),
-            orderBy("position", "asc")
+            where("userId", "==", userId)
         );
 
         const querySnapshot = await getDocs(q);
-        return querySnapshot.docs.map((docSnap) => this.formatTaskDoc(docSnap.id, docSnap.data()));
+        const tasks = querySnapshot.docs.map((docSnap) => this.formatTaskDoc(docSnap.id, docSnap.data()))
+        return tasks.sort((a, b) => a.position - b.position);
     }
 
     static async getTaskById(taskId: string): Promise<TaskModel | null> {
@@ -108,12 +107,12 @@ export class TaskService {
         const q = query(
             tasksRef,
             where("userId", "==", userId),
-            where("quadrant", "==", quadrant),
-            orderBy("position", "asc")
+            where("quadrant", "==", quadrant)
         )
 
         const querySnapshot = await getDocs(q)
-        return querySnapshot.docs.map((docSnap) => this.formatTaskDoc(docSnap.id, docSnap.data()));
+        const tasks = querySnapshot.docs.map((docSnap) => this.formatTaskDoc(docSnap.id, docSnap.data()))
+        return tasks.sort((a, b) => a.position - b.position);
     }
 
     static async getTasksByStatus(userId: string, status: TaskStatus): Promise<TaskModel[]> {
@@ -121,12 +120,12 @@ export class TaskService {
         const q = query(
             tasksRef,
             where("userId", "==", userId),
-            where("status", "==", status),
-            orderBy("position", "asc")
+            where("status", "==", status)
         )
 
         const querySnapshot = await getDocs(q);
-        return querySnapshot.docs.map((docSnap) => this.formatTaskDoc(docSnap.id, docSnap.data()));
+        const tasks = querySnapshot.docs.map((docSnap) => this.formatTaskDoc(docSnap.id, docSnap.data()))
+        return tasks.sort((a, b) => a.position - b.position);
     }
 }
 
