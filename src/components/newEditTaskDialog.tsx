@@ -68,6 +68,69 @@ const QUADRAN_PSOITION_MAP: Record<TaskQuadrant, number> = {
 
   const currentPosition = QUADRAN_PSOITION_MAP[quadrant] || 1;
 
+  const validateForm = () => {
+    const newErrors: {
+      title?: string;
+      dueDate?: string;
+      status?: string;
+      quadrant?: string;
+    } = {};
+
+    if(!title.trim()){
+      newErrors.title = "Task title is required.";
+    }
+
+    if(!dueDate){
+      newErrors.title = "Due date is required.";
+    }
+
+    if(!status){
+      newErrors.title = "Status is required.";
+    }
+    
+    if(!quadrant){
+      newErrors.title = "Quadrant is required.";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if(!validateForm()){
+      return;
+    }
+
+    setIsSubmitting(true);
+    try{
+      const taskPayload = {
+        userId,
+        title: title.trim(),
+        description: description.trim(),
+        status,
+        quadrant,
+        position: currentPosition,
+        dueDate: new Date(dueDate),
+      };
+
+      if(taskToEdit){
+        await onSave({
+          ...taskToEdit,
+          ...taskPayload,
+        });
+      } else {
+        await onSave(taskPayload);
+      }
+      onClose();
+    } catch (error) {
+      console.error("Failed to save task:", error);
+    } finally{
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div>newEditTaskDialog</div>
   )
