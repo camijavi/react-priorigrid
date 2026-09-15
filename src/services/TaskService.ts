@@ -62,7 +62,7 @@ export class TaskService {
 
     // fetch task per user 
 
-    static async getTaskByUserId(userId: string): Promise<TaskModel[]> {
+    static async getTasksByUserId(userId: string): Promise<TaskModel[]> {
         const tasksRef = collection(db, this.TASKS_COLLECTION);
 
         const q = query(
