@@ -1,11 +1,18 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { TaskService } from "../services/TaskService";
 import type { UserModel } from "../models/UserModel";
-import type { TaskModel } from "../models/TaskModel";
+import type { TaskModel, TaskQuadrant } from "../models/TaskModel";
 import { NewEditTaskDialog } from "../components/newEditTaskDialog";
 import { TaskContainer } from "../components/TaskContainer";
 import { MatrixContainer } from "../components/MatrixContainer";
 import { Navbar } from "../components/Navbar";
+
+const QUADRANT_POSITION_MAP: Record<TaskQuadrant, number> = {
+  importantUrgent: 1,
+  importantNotUrgent: 2,
+  notImportantUrgent: 3,
+  notImportantNotUrgent: 4,
+};
 
 interface DashboardScreenProps {
   user?: UserModel | null;
@@ -81,6 +88,35 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
   const handleDeleteTask = async (taskId: string) => {
     await TaskService.deleteTask(taskId);
     await fetchTasks();
+  };
+
+  const handleDropTaskOnQuadrant = async (
+    taskId: string,
+    targetQuadrant: TaskQuadrant
+  ) => {
+    const targetTask = tasks.find((t) => t.id === taskId);
+    if (!targetTask || targetTask.quadrant === targetQuadrant) return;
+
+    const newPosition = QUADRANT_POSITION_MAP[targetQuadrant] || 1;
+
+    // Optimistic local state update for zero-lag drag feedback
+    setTasks((prevTasks) =>
+      prevTasks.map((t) =>
+        t.id === taskId
+          ? { ...t, quadrant: targetQuadrant, position: newPosition }
+          : t
+      )
+    );
+
+    try {
+      await TaskService.updateTask(taskId, {
+        quadrant: targetQuadrant,
+        position: newPosition,
+      });
+    } catch (error) {
+      console.error("Failed to update task quadrant on drop:", error);
+      await fetchTasks();
+    }
   };
 
   const getQuadrantLabel = (quadrant: string) => {
@@ -170,7 +206,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
             />
           </div>
           <div className="lg:col-span-8 flex flex-col">
-            <MatrixContainer tasks={tasks} onViewTask={handleViewTask} />
+            <MatrixContainer tasks={tasks} onViewTask={handleViewTask} onDropTask={handleDropTaskOnQuadrant} />
           </div>
         </div>
       </main>

@@ -10,6 +10,7 @@ export interface TaskCardProps {
 export const TaskCard: React.FC<TaskCardProps> = ({task, onEdit, onDelete}) => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
 
 
   const getQuadrantInfo = (quadrant: string) => {
@@ -85,10 +86,25 @@ export const TaskCard: React.FC<TaskCardProps> = ({task, onEdit, onDelete}) => {
       })
     : "No due date";
 
-  return (
+   return (
     <>
       {/* Main Task Card */}
-      <div className="bg-slate-50/80 hover:bg-slate-50/40 rounded-xl p-5 border border-slate-200/80 hover:border-pink-500/30 shadow-sm hover:shadow-md transition-all flex flex-col justify-between gap-4 group">
+      <div
+        draggable={true}
+        onDragStart={(e) => {
+          setIsDragging(true);
+          e.dataTransfer.setData("text/plain", task.id);
+          e.dataTransfer.effectAllowed = "move";
+        }}
+        onDragEnd={() => {
+          setIsDragging(false);
+        }}
+        className={`bg-slate-50/80 hover:bg-slate-50/40 rounded-xl p-5 border shadow-sm hover:shadow-md transition-all flex flex-col justify-between gap-4 group cursor-grab active:cursor-grabbing select-none ${
+          isDragging
+            ? "opacity-40 scale-95 border-pink-500 shadow-xl ring-2 ring-pink-400/50"
+            : "border-slate-200/80 hover:border-pink-500/30"
+        }`}
+      >
         <div className="flex flex-col gap-3">
           {/* Header row: Quadrant info & Status */}
           <div className="flex items-center justify-between gap-2 flex-wrap">
