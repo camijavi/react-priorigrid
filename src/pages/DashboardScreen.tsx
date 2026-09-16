@@ -170,7 +170,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
             />
           </div>
           <div className="lg:col-span-8 flex flex-col">
-            <MatrixContainer  />
+            <MatrixContainer tasks={tasks} onViewTask={handleViewTask}/>
           </div>
         </div>
       </main>
