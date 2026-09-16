@@ -5,6 +5,7 @@ import { Quadrant } from "./dashboardGrid";
 export interface MatrixContainerProps {
   tasks?: TaskModel[];
   onViewTask?: (task: TaskModel) => void;
+  onDropTask?: (taskId: string, targetQuadrant: TaskQuadrant) => void;
   className?: string;
 }
 
@@ -18,6 +19,7 @@ const QUADRANTS: TaskQuadrant[] = [
 export const MatrixContainer: React.FC<MatrixContainerProps> = ({
   tasks = [],
   onViewTask = () => {},
+  onDropTask,
   className = "",
 }) => {
   return (
@@ -42,6 +44,7 @@ export const MatrixContainer: React.FC<MatrixContainerProps> = ({
             quadrant={quadrant}
             tasks={tasks}
             onViewTask={onViewTask}
+            onDropTask={onDropTask}
           />
         ))}
       </div>
