@@ -18,8 +18,10 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
 }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [taskToEdit, setTaskToEdit] = useState<TaskModel | null>(null);
+  const [taskToView, setTaskToView] = useState<TaskModel | null>(null);
   const [tasks, setTasks] = useState<TaskModel[]>([]);
   const [isLoadingTasks, setIsLoadingTasks] = useState(false);
+  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
 
   const fetchTasks = useCallback(async () => {
     if (!user?.id) return;
@@ -47,6 +49,16 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
     setTaskToEdit(task);
     setIsDialogOpen(true);
   };
+
+  const handleViewTask = (task: TaskModel) => {
+    setTaskToView(task);
+    setIsViewDialogOpen(true);
+  };
+
+  const handleCloseViewDialog = () => {
+    setIsViewDialogOpen(false);
+    setTaskToView(null);
+  }
 
   const handleCloseDialog = () => {
     setIsDialogOpen(false);
@@ -158,7 +170,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
             />
           </div>
           <div className="lg:col-span-8 flex flex-col">
-            <MatrixContainer />
+            <MatrixContainer  />
           </div>
         </div>
       </main>
