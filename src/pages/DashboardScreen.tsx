@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { UserService } from "../services/UserService";
 import { TaskService } from "../services/TaskService";
 import type { UserModel } from "../models/UserModel";
-import type { TaskModel } from "../models/TaskModel"; 
-import { NewEditTaskDialog } from "../components/newEditTaskDialog"; 
-import { Navbar } from "../components/Navbar";
+import type { TaskModel } from "../models/TaskModel";
+import { NewEditTaskDialog } from "../components/newEditTaskDialog";
 import { TaskContainer } from "../components/TaskContainer";
 import { MatrixContainer } from "../components/MatrixContainer";
+import { Navbar } from "../components/Navbar";
 
 interface DashboardScreenProps {
   user?: UserModel | null;
@@ -55,7 +54,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
   };
 
   const handleSaveTask = async (
-    taskData: Omit<TaskModel, "id"> | TaskModel
+    taskData: Omit<TaskModel, "id"> | TaskModel,
   ) => {
     if ("id" in taskData && taskData.id) {
       // Edit mode
@@ -75,15 +74,30 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
   const getQuadrantLabel = (quadrant: string) => {
     switch (quadrant) {
       case "importantUrgent":
-        return { label: "Q1: Important & Urgent", color: "bg-rose-100 text-rose-700 border-rose-200" };
+        return {
+          label: "Q1: Important & Urgent",
+          color: "bg-rose-100 text-rose-700 border-rose-200",
+        };
       case "importantNotUrgent":
-        return { label: "Q2: Important & Not Urgent", color: "bg-amber-100 text-amber-700 border-amber-200" };
+        return {
+          label: "Q2: Important & Not Urgent",
+          color: "bg-amber-100 text-amber-700 border-amber-200",
+        };
       case "notImportantUrgent":
-        return { label: "Q3: Not Important & Urgent", color: "bg-blue-100 text-blue-700 border-blue-200" };
+        return {
+          label: "Q3: Not Important & Urgent",
+          color: "bg-blue-100 text-blue-700 border-blue-200",
+        };
       case "notImportantNotUrgent":
-        return { label: "Q4: Not Important & Not Urgent", color: "bg-slate-100 text-slate-700 border-slate-200" };
+        return {
+          label: "Q4: Not Important & Not Urgent",
+          color: "bg-slate-100 text-slate-700 border-slate-200",
+        };
       default:
-        return { label: quadrant, color: "bg-slate-100 text-slate-700 border-slate-200" };
+        return {
+          label: quadrant,
+          color: "bg-slate-100 text-slate-700 border-slate-200",
+        };
     }
   };
 
@@ -133,19 +147,18 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
         </div>
 
         {/* 2-Column Grid Layout: TaskContainer (Left) & MatrixContainer (Right) */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch flex-1 min-h-[650px]">
-          <div className="lg:col-span-4 h-full flex flex-col">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
+          <div className="lg:col-span-4 flex flex-col">
             <TaskContainer
               tasks={tasks}
               isLoadingTasks={isLoadingTasks}
               onOpenCreateDialog={handleOpenCreateDialog}
               onOpenEditDialog={handleOpenEditDialog}
               onDeleteTask={handleDeleteTask}
-              className="min-h-[650px]"
             />
           </div>
-          <div className="lg:col-span-8 h-full flex flex-col">
-            <MatrixContainer className="min-h-[650px]" />
+          <div className="lg:col-span-8 flex flex-col">
+            <MatrixContainer />
           </div>
         </div>
       </main>

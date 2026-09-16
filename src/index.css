@@ -1,1 +1,28 @@
 @import "tailwindcss";
+
+@layer utilities {
+
+    /* Custom Pink Scrollbar */
+    .scrollbar-pink {
+        scrollbar-width: thin;
+        scrollbar-color: #ec4899 #fdf2f8;
+    }
+
+    .scrollbar-pink::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .scrollbar-pink::-webkit-scrollbar-track {
+        background: #fdf2f8;
+        border-radius: 9999px;
+    }
+
+    .scrollbar-pink::-webkit-scrollbar-thumb {
+        background: #ec4899;
+        border-radius: 9999px;
+    }
+
+    .scrollbar-pink::-webkit-scrollbar-thumb:hover {
+        background: #db2777;
+    }
+}
