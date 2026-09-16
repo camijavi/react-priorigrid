@@ -1,10 +1,11 @@
-import React from "react";
+import React, {useState, useRef} from "react";
 import type { TaskModel, TaskQuadrant } from "../models/TaskModel";
 
 export interface QuadrantProps {
   quadrant: TaskQuadrant;
   tasks: TaskModel[];
   onViewTask: (task: TaskModel) => void;
+  onDropTask?: (taskId: string, targetQuadrant: TaskQuadrant) => void;
 }
 
 export type DashboardGridProps = QuadrantProps;
@@ -102,18 +103,56 @@ const QUADRANT_CONFIG: Record<
 export const Quadrant: React.FC<QuadrantProps> = ({
   quadrant,
   tasks,
-  onViewTask,
+  onViewTask, onDropTask,
 }) => {
+  const [isDragOver, setIsDragOver] = useState(false);
+  const dragCounterRef = useRef(0);
   const config = QUADRANT_CONFIG[quadrant] || QUADRANT_CONFIG.importantUrgent;
 
   // Filter tasks belonging to this quadrant and show ONLY 3 most recent task cards
   const quadrantTasks = tasks
     .filter((t) => t.quadrant === quadrant)
     .slice(0, 3);
+  
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) =>{
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+  };
+
+  const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+  };
+
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    dragCounterRef.current -= 1;
+    if(dragCounterRef.current === 1) {
+      setIsDragOver(true);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    dragCounterRef.current = 0;
+    setIsDragOver(false);
+    const taskId = e.dataTransfer.getData("text/plain");
+    if(taskId && onDropTask){
+      onDropTask(taskId, quadrant);
+    }
+  }
 
   return (
     <div
-      className={`${config.cardBg} rounded-2xl p-4 border ${config.border} shadow-sm transition-all flex flex-col justify-between gap-3 h-full`}
+      onDragOver={handleDragOver}
+      onDragEnter={handleDragEnter}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+      className={`${config.cardBg} rounded-2xl p-4 border ${
+        isDragOver
+          ? "scale-[1.03] ring-4 ring-pink-500/50 border-pink-500 shadow-2xl z-10"
+          : `${config.border} shadow-sm`
+      } transition-all duration-200 flex flex-col justify-between gap-3 h-full`}
     >
       {/* Top Header: Quadrant Badge, Title & Eye Icon (No Functionality) */}
       <div
