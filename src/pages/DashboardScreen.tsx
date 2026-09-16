@@ -58,7 +58,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
   const handleCloseViewDialog = () => {
     setIsViewDialogOpen(false);
     setTaskToView(null);
-  }
+  };
 
   const handleCloseDialog = () => {
     setIsDialogOpen(false);
@@ -170,7 +170,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
             />
           </div>
           <div className="lg:col-span-8 flex flex-col">
-            <MatrixContainer tasks={tasks} onViewTask={handleViewTask}/>
+            <MatrixContainer tasks={tasks} onViewTask={handleViewTask} />
           </div>
         </div>
       </main>
@@ -182,6 +182,16 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
         userId={user?.id || ""}
         onClose={handleCloseDialog}
         onSave={handleSaveTask}
+      />
+
+      {/* View Task Details Modal (Read-Only) */}
+      <NewEditTaskDialog
+        isOpen={isViewDialogOpen}
+        taskToEdit={taskToView}
+        isReadOnly={true}
+        userId={user?.id || ""}
+        onClose={handleCloseViewDialog}
+        onSave={() => {}}
       />
     </div>
   );

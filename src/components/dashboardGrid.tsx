@@ -1,5 +1,5 @@
-import React from 'react';
-import type {TaskModel, TaskQuadrant} from "../models/TaskModel";
+import React from "react";
+import type { TaskModel, TaskQuadrant } from "../models/TaskModel";
 
 export interface QuadrantProps {
   quadrant: TaskQuadrant;
@@ -9,7 +9,8 @@ export interface QuadrantProps {
 
 export type DashboardGridProps = QuadrantProps;
 
-const QUADRANT_CONFIG: Record<TaskQuadrant,
+const QUADRANT_CONFIG: Record<
+  TaskQuadrant,
   {
     title: string;
     cardBg: string;
@@ -28,7 +29,7 @@ const QUADRANT_CONFIG: Record<TaskQuadrant,
     emptyText: string;
   }
 > = {
-    importantUrgent: {
+  importantUrgent: {
     title: "1 - Important & Urgent",
     cardBg: "bg-rose-50/90 hover:bg-rose-50",
     border: "border-2 border-rose-300/90",
@@ -96,15 +97,19 @@ const QUADRANT_CONFIG: Record<TaskQuadrant,
     emptyBg: "bg-white/60 border-purple-200/80",
     emptyText: "text-purple-400",
   },
-}
+};
 
-export const Quadrant: React.FC<QuadrantProps> = ({quadrant, tasks, onViewTask}) => {
+export const Quadrant: React.FC<QuadrantProps> = ({
+  quadrant,
+  tasks,
+  onViewTask,
+}) => {
+  const config = QUADRANT_CONFIG[quadrant] || QUADRANT_CONFIG.importantUrgent;
 
-const config = QUADRANT_CONFIG[quadrant] || QUADRANT_CONFIG.importantUrgent;
-
-const quadrantTasks = tasks
-  .filter((t) => t.quadrant === quadrant)
-  .slice(0,3);
+  // Filter tasks belonging to this quadrant and show ONLY 3 most recent task cards
+  const quadrantTasks = tasks
+    .filter((t) => t.quadrant === quadrant)
+    .slice(0, 3);
 
   return (
     <div
@@ -203,7 +208,7 @@ const quadrantTasks = tasks
       </div>
     </div>
   );
-}
+};
 
 export const DashboardGrid = Quadrant;
 export default Quadrant;

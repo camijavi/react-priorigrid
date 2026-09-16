@@ -1,6 +1,6 @@
 import React from "react";
-import type {TaskModel, TaskQuadrant} from "../models/TaskModel";
-import {Quadrant} from "./dashboardGrid";
+import type { TaskModel, TaskQuadrant } from "../models/TaskModel";
+import { Quadrant } from "./dashboardGrid";
 
 export interface MatrixContainerProps {
   tasks?: TaskModel[];
@@ -15,9 +15,10 @@ const QUADRANTS: TaskQuadrant[] = [
   "notImportantNotUrgent",
 ];
 
-
 export const MatrixContainer: React.FC<MatrixContainerProps> = ({
-  tasks = [],  onViewTask= () => {},className = "",
+  tasks = [],
+  onViewTask = () => {},
+  className = "",
 }) => {
   return (
     <div
@@ -33,10 +34,10 @@ export const MatrixContainer: React.FC<MatrixContainerProps> = ({
         </div>
       </div>
 
-      {/* Empty Container Body */}
+      {/* 2x2 Matrix Grid of Quadrant Squares */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1">
         {QUADRANTS.map((quadrant) => (
-          <Quadrant 
+          <Quadrant
             key={quadrant}
             quadrant={quadrant}
             tasks={tasks}
