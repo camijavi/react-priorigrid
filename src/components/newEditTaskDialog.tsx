@@ -5,6 +5,7 @@ export interface NewEditTaskDialogProps {
   isOpen: boolean;
   taskToEdit?: TaskModel | null;
   userId?: string;
+  isReadOnly?: boolean
   onClose: () => void;
   onSave: (taskData: Omit<TaskModel, "id"> | TaskModel) => Promise<void> | void;
 }
@@ -20,6 +21,7 @@ export const NewEditTaskDialog: React.FC<NewEditTaskDialogProps> = ({
   isOpen,
   taskToEdit,
   userId = "",
+  isReadOnly= false,
   onClose,
   onSave,
 }) => {
@@ -178,10 +180,16 @@ export const NewEditTaskDialog: React.FC<NewEditTaskDialogProps> = ({
             </div>
             <div>
               <h2 className="text-xl font-bold text-slate-900 tracking-tight">
-                {taskToEdit ? "Edit Task" : "Create New Task"}
+                {isReadOnly 
+                  ? "Task Details"
+                  : taskToEdit
+                  ? "Edit Task"
+                  : "Create New Task"}
               </h2>
               <p className="text-xs text-slate-500">
-                {taskToEdit
+                {isReadOnly
+                  ? "Viewing task details."
+                  : taskToEdit
                   ? "Update task details and priority settings."
                   : "Fill in task details to organize your priority grid."}
               </p>
@@ -215,12 +223,13 @@ export const NewEditTaskDialog: React.FC<NewEditTaskDialogProps> = ({
           {/* Title Field */}
           <div>
             <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1.5">
-              Title <span className="text-pink-500">*</span>
+              Title {!isReadOnly && <span className="text-pink-500">*</span>}
             </label>
             <input
               type="text"
               placeholder="e.g. Complete quarterly roadmap report"
               value={title}
+              disabled={isReadOnly}
               onChange={(e) => {
                 setTitle(e.target.value);
                 if (errors.title) {
@@ -262,6 +271,7 @@ export const NewEditTaskDialog: React.FC<NewEditTaskDialogProps> = ({
               rows={3}
               placeholder="Add key context, notes, or acceptance criteria..."
               value={description}
+              disabled={isReadOnly}
               onChange={(e) => setDescription(e.target.value)}
               className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm text-slate-900 bg-slate-50/70 focus:bg-white focus:outline-none focus:border-pink-500 focus:ring-2 focus:ring-pink-500/20 transition-all resize-none"
             />
@@ -272,10 +282,11 @@ export const NewEditTaskDialog: React.FC<NewEditTaskDialogProps> = ({
             {/* Status Dropdown */}
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1.5">
-                Status <span className="text-pink-500">*</span>
+                Status {!isReadOnly && <span className="text-pink-500">*</span>}
               </label>
               <select
                 value={status}
+                disabled={isReadOnly}
                 onChange={(e) => {
                   setStatus(e.target.value as TaskStatus);
                   if (errors.status) {
@@ -315,10 +326,11 @@ export const NewEditTaskDialog: React.FC<NewEditTaskDialogProps> = ({
             {/* Quadrant Dropdown */}
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1.5">
-                Quadrant <span className="text-pink-500">*</span>
+                Quadrant {!isReadOnly && <span className="text-pink-500">*</span>}
               </label>
               <select
                 value={quadrant}
+                disabled={isReadOnly}
                 onChange={(e) => {
                   setQuadrant(e.target.value as TaskQuadrant);
                   if (errors.quadrant) {
@@ -375,11 +387,12 @@ export const NewEditTaskDialog: React.FC<NewEditTaskDialogProps> = ({
             {/* Due Date Field */}
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1.5">
-                Due Date <span className="text-pink-500">*</span>
+                Due Date {!isReadOnly && <span className="text-pink-500">*</span>}
               </label>
               <input
                 type="date"
                 value={dueDate}
+                disabled={isReadOnly}
                 onChange={(e) => {
                   setDueDate(e.target.value);
                   if (errors.dueDate) {
@@ -415,7 +428,16 @@ export const NewEditTaskDialog: React.FC<NewEditTaskDialogProps> = ({
 
           {/* Action Buttons */}
           <div className="mt-4 pt-4 border-t border-slate-100 flex items-center justify-end gap-3">
-            <button
+             {isReadOnly ? (
+              <button
+                type="button"
+                onClick={onClose}
+                className="px-5 py-2.5 bg-slate-800 hover:bg-slate-900 text-white text-sm font-semibold rounded-xl transition-colors cursor-pointer"
+              >
+                Close
+              </button>
+             ):(<>
+             <button
               type="button"
               onClick={onClose}
               disabled={isSubmitting}
@@ -454,6 +476,7 @@ export const NewEditTaskDialog: React.FC<NewEditTaskDialogProps> = ({
                 "Create Task"
               )}
             </button>
+             </>)}
           </div>
         </form>
       </div>
