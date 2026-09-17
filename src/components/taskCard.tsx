@@ -15,6 +15,11 @@ export const TaskCard: React.FC<TaskCardProps> = ({task, onEdit, onDelete}) => {
 
   const getQuadrantInfo = (quadrant: string) => {
     switch (quadrant) {
+      case "empty":
+          return {
+            label: "Unassigned",
+            color: "bg-slate-100 text-slate-600 border-slate-200"
+          }
       case "importantUrgent":
         return {
           label: "Q1: Important & Urgent",

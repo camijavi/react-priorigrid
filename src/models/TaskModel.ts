@@ -1,6 +1,7 @@
 export type TaskStatus = "pending" | "inProgress" | "completed";
 
 export type TaskQuadrant =
+    | "empty"
     | "importantUrgent"
     | "importantNotUrgent"
     | "notImportantUrgent"

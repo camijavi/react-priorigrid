@@ -11,7 +11,7 @@ export interface QuadrantProps {
 export type DashboardGridProps = QuadrantProps;
 
 const QUADRANT_CONFIG: Record<
-  TaskQuadrant,
+  Exclude<TaskQuadrant, "empty">,
   {
     title: string;
     cardBg: string;
@@ -107,7 +107,7 @@ export const Quadrant: React.FC<QuadrantProps> = ({
 }) => {
   const [isDragOver, setIsDragOver] = useState(false);
   const dragCounterRef = useRef(0);
-  const config = QUADRANT_CONFIG[quadrant] || QUADRANT_CONFIG.importantUrgent;
+  const config = QUADRANT_CONFIG[quadrant as Exclude<TaskQuadrant, "empty">] || QUADRANT_CONFIG.importantUrgent;
 
   // Filter tasks belonging to this quadrant and show ONLY 3 most recent task cards
   const quadrantTasks = tasks

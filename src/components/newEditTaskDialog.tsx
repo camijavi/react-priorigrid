@@ -11,6 +11,7 @@ export interface NewEditTaskDialogProps {
 }
 
 const QUADRANT_POSITION_MAP: Record<TaskQuadrant, number> = {
+  empty:0,
   importantUrgent: 1,
   importantNotUrgent: 2,
   notImportantUrgent: 3,
@@ -28,7 +29,7 @@ export const NewEditTaskDialog: React.FC<NewEditTaskDialogProps> = ({
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [status, setStatus] = useState<TaskStatus>("pending");
-  const [quadrant, setQuadrant] = useState<TaskQuadrant>("importantUrgent");
+  const [quadrant, setQuadrant] = useState<TaskQuadrant>("empty");
   const [dueDate, setDueDate] = useState("");
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -52,7 +53,7 @@ export const NewEditTaskDialog: React.FC<NewEditTaskDialogProps> = ({
         setTitle(taskToEdit.title || "");
         setDescription(taskToEdit.description || "");
         setStatus(taskToEdit.status || "pending");
-        setQuadrant(taskToEdit.quadrant || "importantUrgent");
+        setQuadrant(taskToEdit.quadrant || "empty");
         setDueDate(
           taskToEdit.dueDate
             ? formatDateToInput(new Date(taskToEdit.dueDate))
@@ -62,7 +63,7 @@ export const NewEditTaskDialog: React.FC<NewEditTaskDialogProps> = ({
         setTitle("");
         setDescription("");
         setStatus("pending");
-        setQuadrant("importantUrgent");
+        setQuadrant("empty");
         setDueDate(new Date().toISOString().split("T")[0]);
       }
     }
@@ -70,7 +71,7 @@ export const NewEditTaskDialog: React.FC<NewEditTaskDialogProps> = ({
 
   if (!isOpen) return null;
 
-  const currentPosition = QUADRANT_POSITION_MAP[quadrant] || 1;
+  const currentPosition = QUADRANT_POSITION_MAP[quadrant] ?? 0;
 
   const validateForm = () => {
     const newErrors: {
@@ -349,6 +350,7 @@ export const NewEditTaskDialog: React.FC<NewEditTaskDialogProps> = ({
                     : "border-slate-200 focus:border-pink-500 focus:ring-2 focus:ring-pink-500/20"
                 }`}
               >
+                <option value="empty">Unassigned (Container)</option>
                 <option value="importantUrgent">1 - Important & Urgent</option>
                 <option value="importantNotUrgent">
                   2 - Important & Not Urgent

@@ -19,6 +19,10 @@ export const TaskContainer: React.FC<TaskContainerProps> = ({
   onDeleteTask,
   className = "",
 }) => {
+
+  const containerTasks = tasks.filter((t) => t.quadrant === "empty" || t.position === 0 || !t.quadrant);
+
+
   return (
     <div
       className={`bg-white rounded-2xl p-6 shadow-sm border border-slate-200 flex flex-col gap-6 h-full flex-1 ${className}`}
@@ -27,10 +31,10 @@ export const TaskContainer: React.FC<TaskContainerProps> = ({
       <div className="flex items-center justify-between border-b border-slate-100 pb-4">
         <div>
           <h3 className="text-lg font-bold text-slate-900">
-            Your Tasks ({tasks.length})
+            Your Tasks ({containerTasks.length})
           </h3>
           <p className="text-xs text-slate-500 mt-0.5">
-            All your scheduled and priority items in one place.
+             All your unassigned tasks ready to be placed into quadrants.
           </p>
         </div>
         <button
@@ -79,7 +83,7 @@ export const TaskContainer: React.FC<TaskContainerProps> = ({
             </svg>
             <span className="text-sm font-medium">Loading your tasks...</span>
           </div>
-        ) : tasks.length === 0 ? (
+        ) : containerTasks.length === 0 ? (
           <div className="p-10 text-center border border-dashed border-slate-200 bg-slate-50/50 rounded-2xl flex flex-col items-center justify-center gap-3 flex-1">
             <div className="w-14 h-14 rounded-2xl bg-pink-50 text-pink-500 flex items-center justify-center">
               <svg
@@ -97,10 +101,9 @@ export const TaskContainer: React.FC<TaskContainerProps> = ({
               </svg>
             </div>
             <div>
-              <h4 className="font-bold text-slate-900 text-lg">No tasks yet</h4>
+              <h4 className="font-bold text-slate-900 text-lg">No unassigned tasks</h4>
               <p className="text-slate-500 text-sm max-w-md mt-1">
-                Click the <strong>"+"</strong> button to add your first priority
-                task and start organizing your workflow.
+                 All tasks are currently assigned to matrix quadrants, or click <strong>"+"</strong> to add a new task.
               </p>
             </div>
             <button
@@ -112,7 +115,7 @@ export const TaskContainer: React.FC<TaskContainerProps> = ({
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-4">
-            {tasks.map((task) => (
+            {containerTasks.map((task) => (
               <TaskCard
                 key={task.id}
                 task={task}

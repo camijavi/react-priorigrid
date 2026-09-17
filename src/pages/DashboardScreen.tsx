@@ -8,6 +8,7 @@ import { MatrixContainer } from "../components/MatrixContainer";
 import { Navbar } from "../components/Navbar";
 
 const QUADRANT_POSITION_MAP: Record<TaskQuadrant, number> = {
+  empty:0,
   importantUrgent: 1,
   importantNotUrgent: 2,
   notImportantUrgent: 3,
@@ -116,36 +117,6 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
     } catch (error) {
       console.error("Failed to update task quadrant on drop:", error);
       await fetchTasks();
-    }
-  };
-
-  const getQuadrantLabel = (quadrant: string) => {
-    switch (quadrant) {
-      case "importantUrgent":
-        return {
-          label: "Q1: Important & Urgent",
-          color: "bg-rose-100 text-rose-700 border-rose-200",
-        };
-      case "importantNotUrgent":
-        return {
-          label: "Q2: Important & Not Urgent",
-          color: "bg-amber-100 text-amber-700 border-amber-200",
-        };
-      case "notImportantUrgent":
-        return {
-          label: "Q3: Not Important & Urgent",
-          color: "bg-blue-100 text-blue-700 border-blue-200",
-        };
-      case "notImportantNotUrgent":
-        return {
-          label: "Q4: Not Important & Not Urgent",
-          color: "bg-slate-100 text-slate-700 border-slate-200",
-        };
-      default:
-        return {
-          label: quadrant,
-          color: "bg-slate-100 text-slate-700 border-slate-200",
-        };
     }
   };
 
