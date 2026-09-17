@@ -1,5 +1,5 @@
-import React from "react";
-import type { TaskModel } from "../models/TaskModel";
+import React, { useState, useRef } from "react";
+import type { TaskModel, TaskQuadrant } from "../models/TaskModel";
 import { TaskCard } from "./taskCard";
 
 export interface TaskContainerProps {
@@ -8,6 +8,7 @@ export interface TaskContainerProps {
   onOpenCreateDialog: () => void;
   onOpenEditDialog: (task: TaskModel) => void;
   onDeleteTask: (taskId: string) => Promise<void> | void;
+  onDropTask?: (taskId: string, targetQuadrant: TaskQuadrant) => void;
   className?: string;
 }
 
@@ -17,15 +18,58 @@ export const TaskContainer: React.FC<TaskContainerProps> = ({
   onOpenCreateDialog,
   onOpenEditDialog,
   onDeleteTask,
+  onDropTask,
   className = "",
 }) => {
+  const [isDragOver, setIsDragOver] = useState(false);
+  const dragCounterRef = useRef(0);
 
-  const containerTasks = tasks.filter((t) => t.quadrant === "empty" || t.position === 0 || !t.quadrant);
+  const containerTasks = tasks.filter(
+    (t) => t.quadrant === "empty" || t.position === 0 || !t.quadrant
+  );
 
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+  };
+
+  const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    dragCounterRef.current += 1;
+    if (dragCounterRef.current === 1) {
+      setIsDragOver(true);
+    }
+  };
+
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    dragCounterRef.current -= 1;
+    if (dragCounterRef.current === 0) {
+      setIsDragOver(false);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    dragCounterRef.current = 0;
+    setIsDragOver(false);
+    const taskId = e.dataTransfer.getData("text/plain");
+    if (taskId && onDropTask) {
+      onDropTask(taskId, "empty");
+    }
+  };
 
   return (
     <div
-      className={`bg-white rounded-2xl p-6 shadow-sm border border-slate-200 flex flex-col gap-6 h-full flex-1 ${className}`}
+      onDragOver={handleDragOver}
+      onDragEnter={handleDragEnter}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+      className={`bg-white rounded-2xl p-6 border transition-all duration-200 flex flex-col gap-6 h-full flex-1 ${
+        isDragOver
+          ? "ring-4 ring-pink-500/50 border-pink-500 shadow-2xl scale-[1.01]"
+          : "border-slate-200 shadow-sm"
+      } ${className}`}
     >
       {/* Header Bar */}
       <div className="flex items-center justify-between border-b border-slate-100 pb-4">
@@ -34,7 +78,7 @@ export const TaskContainer: React.FC<TaskContainerProps> = ({
             Your Tasks ({containerTasks.length})
           </h3>
           <p className="text-xs text-slate-500 mt-0.5">
-             All your unassigned tasks ready to be placed into quadrants.
+            All your unassigned tasks ready to be placed into quadrants.
           </p>
         </div>
         <button
@@ -103,7 +147,7 @@ export const TaskContainer: React.FC<TaskContainerProps> = ({
             <div>
               <h4 className="font-bold text-slate-900 text-lg">No unassigned tasks</h4>
               <p className="text-slate-500 text-sm max-w-md mt-1">
-                 All tasks are currently assigned to matrix quadrants, or click <strong>"+"</strong> to add a new task.
+                All tasks are currently assigned to matrix quadrants, or click <strong>"+"</strong> to add a new task.
               </p>
             </div>
             <button

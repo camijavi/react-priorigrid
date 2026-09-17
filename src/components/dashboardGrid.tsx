@@ -1,4 +1,4 @@
-import React, {useState, useRef} from "react";
+import React, { useState, useRef } from "react";
 import type { TaskModel, TaskQuadrant } from "../models/TaskModel";
 
 export interface QuadrantProps {
@@ -103,32 +103,38 @@ const QUADRANT_CONFIG: Record<
 export const Quadrant: React.FC<QuadrantProps> = ({
   quadrant,
   tasks,
-  onViewTask, onDropTask,
+  onViewTask,
+  onDropTask,
 }) => {
   const [isDragOver, setIsDragOver] = useState(false);
   const dragCounterRef = useRef(0);
-  const config = QUADRANT_CONFIG[quadrant as Exclude<TaskQuadrant, "empty">] || QUADRANT_CONFIG.importantUrgent;
+  const config =
+    QUADRANT_CONFIG[quadrant as Exclude<TaskQuadrant, "empty">] ||
+    QUADRANT_CONFIG.importantUrgent;
 
   // Filter tasks belonging to this quadrant and show ONLY 3 most recent task cards
   const quadrantTasks = tasks
     .filter((t) => t.quadrant === quadrant)
     .slice(0, 3);
-  
-  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) =>{
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.dataTransfer.dropEffect = "move";
   };
 
   const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
-    e.dataTransfer.dropEffect = "move";
+    dragCounterRef.current += 1;
+    if (dragCounterRef.current === 1) {
+      setIsDragOver(true);
+    }
   };
 
   const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     dragCounterRef.current -= 1;
-    if(dragCounterRef.current === 1) {
-      setIsDragOver(true);
+    if (dragCounterRef.current === 0) {
+      setIsDragOver(false);
     }
   };
 
@@ -137,10 +143,10 @@ export const Quadrant: React.FC<QuadrantProps> = ({
     dragCounterRef.current = 0;
     setIsDragOver(false);
     const taskId = e.dataTransfer.getData("text/plain");
-    if(taskId && onDropTask){
+    if (taskId && onDropTask) {
       onDropTask(taskId, quadrant);
     }
-  }
+  };
 
   return (
     <div
@@ -211,18 +217,41 @@ export const Quadrant: React.FC<QuadrantProps> = ({
           quadrantTasks.map((task) => (
             <div
               key={task.id}
-              className={`${config.itemBg} border ${config.itemBorder} ${config.itemHoverBorder} rounded-xl px-3 py-2.5 flex items-center justify-between gap-2 shadow-2xs transition-all`}
+              draggable={true}
+              onDragStart={(e) => {
+                e.dataTransfer.setData("text/plain", task.id);
+                e.dataTransfer.effectAllowed = "move";
+              }}
+              className={`${config.itemBg} border ${config.itemBorder} ${config.itemHoverBorder} rounded-xl px-3 py-2.5 flex items-center justify-between gap-2 shadow-2xs hover:shadow-md transition-all cursor-grab active:cursor-grabbing select-none group`}
             >
-              <span
-                className={`text-xs ${config.itemTextColor} truncate flex-1`}
-              >
-                {task.title}
-              </span>
+              <div className="flex items-center gap-2 truncate flex-1">
+                <svg
+                  className="w-3.5 h-3.5 text-slate-400 shrink-0 opacity-40 group-hover:opacity-100 transition-opacity"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 8h16M4 16h16"
+                  />
+                </svg>
+                <span
+                  className={`text-xs ${config.itemTextColor} truncate flex-1`}
+                >
+                  {task.title}
+                </span>
+              </div>
 
               {/* (i) Info Icon Button -> Opens task details in read-only mode */}
               <button
                 type="button"
-                onClick={() => onViewTask(task)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onViewTask(task);
+                }}
                 className={`${config.infoIconColor} p-1 rounded-md transition-colors cursor-pointer shrink-0`}
                 title="View Task Details"
                 aria-label="View Task Details"

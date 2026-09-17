@@ -174,6 +174,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
               onOpenCreateDialog={handleOpenCreateDialog}
               onOpenEditDialog={handleOpenEditDialog}
               onDeleteTask={handleDeleteTask}
+              onDropTask = {handleDropTaskOnQuadrant}
             />
           </div>
           <div className="lg:col-span-8 flex flex-col">
