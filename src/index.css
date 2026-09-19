@@ -1,1 +1,124 @@
 @import "tailwindcss";
+
+@layer utilities {
+
+    /* Custom Pink Scrollbar */
+    .scrollbar-pink {
+        scrollbar-width: thin;
+        scrollbar-color: #ec4899 #fdf2f8;
+    }
+
+    .scrollbar-pink::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .scrollbar-pink::-webkit-scrollbar-track {
+        background: #fdf2f8;
+        border-radius: 9999px;
+    }
+
+    .scrollbar-pink::-webkit-scrollbar-thumb {
+        background: #ec4899;
+        border-radius: 9999px;
+    }
+
+    .scrollbar-pink::-webkit-scrollbar-thumb:hover {
+        background: #db2777;
+    }
+
+    /* Custom Rose Scrollbar (Q1 - Important & Urgent) */
+    .scrollbar-rose {
+        scrollbar-width: thin;
+        scrollbar-color: #fb7185 #fff1f2;
+    }
+
+    .scrollbar-rose::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .scrollbar-rose::-webkit-scrollbar-track {
+        background: #fff1f2;
+        border-radius: 9999px;
+    }
+
+    .scrollbar-rose::-webkit-scrollbar-thumb {
+        background: #fb7185;
+        border-radius: 9999px;
+    }
+
+    .scrollbar-rose::-webkit-scrollbar-thumb:hover {
+        background: #f43f5e;
+    }
+
+    /* Custom Amber Scrollbar (Q2 - Important & Not Urgent) */
+    .scrollbar-amber {
+        scrollbar-width: thin;
+        scrollbar-color: #fbbf24 #fffbeb;
+    }
+
+    .scrollbar-amber::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .scrollbar-amber::-webkit-scrollbar-track {
+        background: #fffbeb;
+        border-radius: 9999px;
+    }
+
+    .scrollbar-amber::-webkit-scrollbar-thumb {
+        background: #fbbf24;
+        border-radius: 9999px;
+    }
+
+    .scrollbar-amber::-webkit-scrollbar-thumb:hover {
+        background: #f59e0b;
+    }
+
+    /* Custom Sky Scrollbar (Q3 - Not Important & Urgent) */
+    .scrollbar-sky {
+        scrollbar-width: thin;
+        scrollbar-color: #38bdf8 #f0f9ff;
+    }
+
+    .scrollbar-sky::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .scrollbar-sky::-webkit-scrollbar-track {
+        background: #f0f9ff;
+        border-radius: 9999px;
+    }
+
+    .scrollbar-sky::-webkit-scrollbar-thumb {
+        background: #38bdf8;
+        border-radius: 9999px;
+    }
+
+    .scrollbar-sky::-webkit-scrollbar-thumb:hover {
+        background: #0ea5e9;
+    }
+
+    /* Custom Purple Scrollbar (Q4 - Not Important & Not Urgent) */
+    .scrollbar-purple {
+        scrollbar-width: thin;
+        scrollbar-color: #c084fc #faf5ff;
+    }
+
+    .scrollbar-purple::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .scrollbar-purple::-webkit-scrollbar-track {
+        background: #faf5ff;
+        border-radius: 9999px;
+    }
+
+    .scrollbar-purple::-webkit-scrollbar-thumb {
+        background: #c084fc;
+        border-radius: 9999px;
+    }
+
+    .scrollbar-purple::-webkit-scrollbar-thumb:hover {
+        background: #a855f7;
+    }
+}

@@ -10,10 +10,16 @@ export interface TaskCardProps {
 export const TaskCard: React.FC<TaskCardProps> = ({task, onEdit, onDelete}) => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
 
 
   const getQuadrantInfo = (quadrant: string) => {
     switch (quadrant) {
+      case "empty":
+          return {
+            label: "Unassigned",
+            color: "bg-esmerald-100 text-esmerald-600 border-esmerald-200"
+          }
       case "importantUrgent":
         return {
           label: "Q1: Important & Urgent",
@@ -32,12 +38,12 @@ export const TaskCard: React.FC<TaskCardProps> = ({task, onEdit, onDelete}) => {
       case "notImportantNotUrgent":
         return {
           label: "Q4: Not Important & Not Urgent",
-          color: "bg-slate-100 text-slate-700 border-slate-200",
+          color: "bg-esmerald-100 text-esmerald-700 border-esmerald-200",
         };
       default:
         return {
           label: quadrant,
-          color: "bg-slate-100 text-slate-700 border-slate-200",
+          color: "bg-esmerald-100 text-esmerald-700 border-esmerald-200",
         };
     }
   }
@@ -49,10 +55,10 @@ export const TaskCard: React.FC<TaskCardProps> = ({task, onEdit, onDelete}) => {
           label: "In Progress",
           color: "bg-purple-50 text-purple-700 border-purple-200",
         };
-      case "archived":
+      case "completed":
         return {
-          label: "Archived",
-          color: "bg-slate-100 text-slate-500 border-slate-200",
+          label: "Completed",
+          color: "bg-esmerald-100 text-esmerald-500 border-esmerald-200",
         };
       case "pending":
       default:
@@ -85,10 +91,25 @@ export const TaskCard: React.FC<TaskCardProps> = ({task, onEdit, onDelete}) => {
       })
     : "No due date";
 
-  return (
+   return (
     <>
       {/* Main Task Card */}
-      <div className="bg-slate-50/80 hover:bg-slate-50/40 rounded-xl p-5 border border-slate-200/80 hover:border-pink-500/30 shadow-sm hover:shadow-md transition-all flex flex-col justify-between gap-4 group">
+      <div
+        draggable={true}
+        onDragStart={(e) => {
+          setIsDragging(true);
+          e.dataTransfer.setData("text/plain", task.id);
+          e.dataTransfer.effectAllowed = "move";
+        }}
+        onDragEnd={() => {
+          setIsDragging(false);
+        }}
+        className={`bg-esmerald-50/80 hover:bg-esmerald-50/40 rounded-xl p-5 border shadow-sm hover:shadow-md transition-all flex flex-col justify-between gap-4 group cursor-grab active:cursor-grabbing select-none ${
+          isDragging
+            ? "opacity-40 scale-95 border-pink-500 shadow-xl ring-2 ring-pink-400/50"
+            : "border-esmerald-200/80 hover:border-pink-500/30"
+        }`}
+      >
         <div className="flex flex-col gap-3">
           {/* Header row: Quadrant info & Status */}
           <div className="flex items-center justify-between gap-2 flex-wrap">
@@ -106,11 +127,11 @@ export const TaskCard: React.FC<TaskCardProps> = ({task, onEdit, onDelete}) => {
 
           {/* Title & Description */}
           <div>
-            <h4 className="font-bold text-slate-900 text-base group-hover:text-pink-600 transition-colors line-clamp-2">
+            <h4 className="font-bold text-esmerald-900 text-base group-hover:text-pink-600 transition-colors line-clamp-2">
               {task.title}
             </h4>
             {task.description && (
-              <p className="text-xs text-slate-500 mt-1 line-clamp-2">
+              <p className="text-xs text-esmerald-500 mt-1 line-clamp-2">
                 {task.description}
               </p>
             )}
@@ -118,8 +139,8 @@ export const TaskCard: React.FC<TaskCardProps> = ({task, onEdit, onDelete}) => {
         </div>
 
         {/* Footer row: Due date & Action buttons */}
-        <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-          <div className="flex items-center gap-1.5 text-slate-400 font-medium">
+        <div className="pt-3 border-t border-esmerald-100 flex items-center justify-between text-xs text-esmerald-500">
+          <div className="flex items-center gap-1.5 text-esmerald-400 font-medium">
             <svg
               className="w-4 h-4"
               fill="none"
@@ -142,7 +163,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({task, onEdit, onDelete}) => {
             <button
               type="button"
               onClick={() => onEdit(task)}
-              className="p-1.5 rounded-lg text-slate-500 hover:text-pink-600 hover:bg-pink-50 transition-colors cursor-pointer"
+              className="p-1.5 rounded-lg text-esmerald-500 hover:text-pink-600 hover:bg-pink-50 transition-colors cursor-pointer"
               title="Edit Task"
               aria-label="Edit Task"
             >
@@ -165,7 +186,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({task, onEdit, onDelete}) => {
             <button
               type="button"
               onClick={() => setShowDeleteConfirm(true)}
-              className="p-1.5 rounded-lg text-slate-500 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+              className="p-1.5 rounded-lg text-esmerald-500 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
               title="Delete Task"
               aria-label="Delete Task"
             >
@@ -190,11 +211,11 @@ export const TaskCard: React.FC<TaskCardProps> = ({task, onEdit, onDelete}) => {
       {/* Delete Confirmation Modal */}
       {showDeleteConfirm && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm transition-opacity duration-200"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-esmerald-900/50 backdrop-blur-sm transition-opacity duration-200"
           onClick={() => setShowDeleteConfirm(false)}
         >
           <div
-            className="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-sm p-6 flex flex-col items-center text-center gap-4 transform transition-all duration-200 scale-100"
+            className="bg-white rounded-2xl shadow-2xl border border-esmerald-200 w-full max-w-sm p-6 flex flex-col items-center text-center gap-4 transform transition-all duration-200 scale-100"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Trash warning icon badge */}
@@ -215,10 +236,10 @@ export const TaskCard: React.FC<TaskCardProps> = ({task, onEdit, onDelete}) => {
             </div>
 
             <div>
-              <h3 className="text-lg font-bold text-slate-900">Delete Task?</h3>
-              <p className="text-xs text-slate-500 mt-1.5 leading-relaxed">
+              <h3 className="text-lg font-bold text-esmerald-900">Delete Task?</h3>
+              <p className="text-xs text-esmerald-500 mt-1.5 leading-relaxed">
                 Are you sure you want to delete{" "}
-                <span className="font-semibold text-slate-800">"{task.title}"</span>
+                <span className="font-semibold text-esmerald-800">"{task.title}"</span>
                 ? This action cannot be undone.
               </p>
             </div>
@@ -229,7 +250,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({task, onEdit, onDelete}) => {
                 type="button"
                 onClick={() => setShowDeleteConfirm(false)}
                 disabled={isDeleting}
-                className="flex-1 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
+                className="flex-1 py-2.5 rounded-xl border border-esmerald-200 text-sm font-semibold text-esmerald-700 hover:bg-esmerald-100 transition-colors cursor-pointer"
               >
                 Cancel
               </button>

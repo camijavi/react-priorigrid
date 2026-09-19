@@ -5,11 +5,13 @@ export interface NewEditTaskDialogProps {
   isOpen: boolean;
   taskToEdit?: TaskModel | null;
   userId?: string;
+  isReadOnly?: boolean;
   onClose: () => void;
   onSave: (taskData: Omit<TaskModel, "id"> | TaskModel) => Promise<void> | void;
 }
 
 const QUADRANT_POSITION_MAP: Record<TaskQuadrant, number> = {
+  empty:0,
   importantUrgent: 1,
   importantNotUrgent: 2,
   notImportantUrgent: 3,
@@ -20,13 +22,14 @@ export const NewEditTaskDialog: React.FC<NewEditTaskDialogProps> = ({
   isOpen,
   taskToEdit,
   userId = "",
+  isReadOnly = false,
   onClose,
   onSave,
 }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [status, setStatus] = useState<TaskStatus>("pending");
-  const [quadrant, setQuadrant] = useState<TaskQuadrant>("importantUrgent");
+  const [quadrant, setQuadrant] = useState<TaskQuadrant>("empty");
   const [dueDate, setDueDate] = useState("");
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -50,17 +53,17 @@ export const NewEditTaskDialog: React.FC<NewEditTaskDialogProps> = ({
         setTitle(taskToEdit.title || "");
         setDescription(taskToEdit.description || "");
         setStatus(taskToEdit.status || "pending");
-        setQuadrant(taskToEdit.quadrant || "importantUrgent");
+        setQuadrant(taskToEdit.quadrant || "empty");
         setDueDate(
           taskToEdit.dueDate
             ? formatDateToInput(new Date(taskToEdit.dueDate))
-            : new Date().toISOString().split("T")[0]
+            : new Date().toISOString().split("T")[0],
         );
       } else {
         setTitle("");
         setDescription("");
         setStatus("pending");
-        setQuadrant("importantUrgent");
+        setQuadrant("empty");
         setDueDate(new Date().toISOString().split("T")[0]);
       }
     }
@@ -68,7 +71,7 @@ export const NewEditTaskDialog: React.FC<NewEditTaskDialogProps> = ({
 
   if (!isOpen) return null;
 
-  const currentPosition = QUADRANT_POSITION_MAP[quadrant] || 1;
+  const currentPosition = QUADRANT_POSITION_MAP[quadrant] ?? 0;
 
   const validateForm = () => {
     const newErrors: {
@@ -178,10 +181,16 @@ export const NewEditTaskDialog: React.FC<NewEditTaskDialogProps> = ({
             </div>
             <div>
               <h2 className="text-xl font-bold text-slate-900 tracking-tight">
-                {taskToEdit ? "Edit Task" : "Create New Task"}
+                {isReadOnly
+                  ? "Task Details"
+                  : taskToEdit
+                  ? "Edit Task"
+                  : "Create New Task"}
               </h2>
               <p className="text-xs text-slate-500">
-                {taskToEdit
+                {isReadOnly
+                  ? "Viewing task details."
+                  : taskToEdit
                   ? "Update task details and priority settings."
                   : "Fill in task details to organize your priority grid."}
               </p>
@@ -211,16 +220,20 @@ export const NewEditTaskDialog: React.FC<NewEditTaskDialogProps> = ({
         </div>
 
         {/* Form Body */}
-        <form onSubmit={handleSubmit} className="p-6 flex flex-col gap-4 bg-white">
+        <form
+          onSubmit={handleSubmit}
+          className="p-6 flex flex-col gap-4 bg-white"
+        >
           {/* Title Field */}
           <div>
             <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1.5">
-              Title <span className="text-pink-500">*</span>
+              Title {!isReadOnly && <span className="text-pink-500">*</span>}
             </label>
             <input
               type="text"
               placeholder="e.g. Complete quarterly roadmap report"
               value={title}
+              disabled={isReadOnly}
               onChange={(e) => {
                 setTitle(e.target.value);
                 if (errors.title) {
@@ -256,12 +269,16 @@ export const NewEditTaskDialog: React.FC<NewEditTaskDialogProps> = ({
           {/* Description Field (Optional) */}
           <div>
             <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1.5">
-              Description <span className="text-slate-400 font-normal lowercase">(optional)</span>
+              Description{" "}
+              <span className="text-slate-400 font-normal lowercase">
+                (optional)
+              </span>
             </label>
             <textarea
               rows={3}
               placeholder="Add key context, notes, or acceptance criteria..."
               value={description}
+              disabled={isReadOnly}
               onChange={(e) => setDescription(e.target.value)}
               className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm text-slate-900 bg-slate-50/70 focus:bg-white focus:outline-none focus:border-pink-500 focus:ring-2 focus:ring-pink-500/20 transition-all resize-none"
             />
@@ -272,10 +289,11 @@ export const NewEditTaskDialog: React.FC<NewEditTaskDialogProps> = ({
             {/* Status Dropdown */}
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1.5">
-                Status <span className="text-pink-500">*</span>
+                Status {!isReadOnly && <span className="text-pink-500">*</span>}
               </label>
               <select
                 value={status}
+                disabled={isReadOnly}
                 onChange={(e) => {
                   setStatus(e.target.value as TaskStatus);
                   if (errors.status) {
@@ -290,7 +308,7 @@ export const NewEditTaskDialog: React.FC<NewEditTaskDialogProps> = ({
               >
                 <option value="pending">Pending</option>
                 <option value="inprogress">In Progress</option>
-                <option value="archived">Archived</option>
+                <option value="completed">Completed</option>
               </select>
               {errors.status && (
                 <p className="mt-1.5 text-xs font-semibold text-rose-600 flex items-center gap-1.5">
@@ -311,75 +329,14 @@ export const NewEditTaskDialog: React.FC<NewEditTaskDialogProps> = ({
                 </p>
               )}
             </div>
-
-            {/* Quadrant Dropdown */}
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1.5">
-                Quadrant <span className="text-pink-500">*</span>
-              </label>
-              <select
-                value={quadrant}
-                onChange={(e) => {
-                  setQuadrant(e.target.value as TaskQuadrant);
-                  if (errors.quadrant) {
-                    setErrors((prev) => ({ ...prev, quadrant: undefined }));
-                  }
-                }}
-                className={`w-full px-3.5 py-2.5 rounded-xl border text-sm text-slate-900 bg-slate-50/70 focus:bg-white focus:outline-none transition-all ${
-                  errors.quadrant
-                    ? "border-rose-400 bg-rose-50/50 focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20"
-                    : "border-slate-200 focus:border-pink-500 focus:ring-2 focus:ring-pink-500/20"
-                }`}
-              >
-                <option value="importantUrgent">1 - Important & Urgent</option>
-                <option value="importantNotUrgent">2 - Important & Not Urgent</option>
-                <option value="notImportantUrgent">3 - Not Important & Urgent</option>
-                <option value="notImportantNotUrgent">4 - Not Important & Not Urgent</option>
-              </select>
-              {errors.quadrant && (
-                <p className="mt-1.5 text-xs font-semibold text-rose-600 flex items-center gap-1.5">
-                  <svg
-                    className="w-4 h-4 shrink-0"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                  {errors.quadrant}
-                </p>
-              )}
-            </div>
-          </div>
-
-          {/* Position & Due Date Row */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {/* Position Indicator */}
-            <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1.5">
-                Position <span className="text-slate-400 font-normal lowercase">(auto position)</span>
-              </label>
-              <div className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-medium text-slate-700 bg-slate-100/80 flex items-center justify-between">
-                <span>Quadrant Position #{currentPosition}</span>
-                <span className="px-2 py-0.5 rounded-md text-xs font-bold bg-pink-100 text-pink-700 border border-pink-200">
-                  P{currentPosition}
-                </span>
-              </div>
-            </div>
-
-            {/* Due Date Field */}
-            <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1.5">
-                Due Date <span className="text-pink-500">*</span>
+                Due Date {!isReadOnly && <span className="text-pink-500">*</span>}
               </label>
               <input
                 type="date"
                 value={dueDate}
+                disabled={isReadOnly}
                 onChange={(e) => {
                   setDueDate(e.target.value);
                   if (errors.dueDate) {
@@ -415,45 +372,57 @@ export const NewEditTaskDialog: React.FC<NewEditTaskDialogProps> = ({
 
           {/* Action Buttons */}
           <div className="mt-4 pt-4 border-t border-slate-100 flex items-center justify-end gap-3">
-            <button
-              type="button"
-              onClick={onClose}
-              disabled={isSubmitting}
-              className="px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="px-5 py-2.5 bg-gradient-to-r from-orange-500 via-pink-500 to-rose-500 hover:from-orange-600 hover:via-pink-600 hover:to-rose-600 text-white text-sm font-bold rounded-xl shadow-md hover:shadow-lg transition-all duration-150 transform hover:-translate-y-0.5 active:translate-y-0 flex items-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isSubmitting ? (
-                <>
-                  <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24">
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                      fill="none"
-                    />
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    />
-                  </svg>
-                  Saving...
-                </>
-              ) : taskToEdit ? (
-                "Save Changes"
-              ) : (
-                "Create Task"
-              )}
-            </button>
+            {isReadOnly ? (
+              <button
+                type="button"
+                onClick={onClose}
+                className="px-5 py-2.5 bg-slate-800 hover:bg-slate-900 text-white text-sm font-semibold rounded-xl transition-colors cursor-pointer"
+              >
+                Close
+              </button>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  onClick={onClose}
+                  disabled={isSubmitting}
+                  className="px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="px-5 py-2.5 bg-gradient-to-r from-orange-500 via-pink-500 to-rose-500 hover:from-orange-600 hover:via-pink-600 hover:to-rose-600 text-white text-sm font-bold rounded-xl shadow-md hover:shadow-lg transition-all duration-150 transform hover:-translate-y-0.5 active:translate-y-0 flex items-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24">
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                          fill="none"
+                        />
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        />
+                      </svg>
+                      Saving...
+                    </>
+                  ) : taskToEdit ? (
+                    "Save Changes"
+                  ) : (
+                    "Create Task"
+                  )}
+                </button>
+              </>
+            )}
           </div>
         </form>
       </div>

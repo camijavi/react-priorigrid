@@ -26,7 +26,7 @@ export class TaskService {
             title: data.title || "",
             description: data.description || "",
             status: (data.status as TaskStatus) || "pending",
-            quadrant: (data.quadrant as TaskQuadrant) || "importantUrgent",
+            quadrant: (data.quadrant as TaskQuadrant) || "empty",
             position: typeof data.position === "number" ? data.position : 0,
             dueDate: data.dueDate instanceof Timestamp
                 ? data.dueDate.toDate()
