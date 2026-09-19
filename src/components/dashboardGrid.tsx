@@ -225,19 +225,7 @@ export const Quadrant: React.FC<QuadrantProps> = ({
               className={`${config.itemBg} border ${config.itemBorder} ${config.itemHoverBorder} rounded-xl px-3 py-2.5 flex items-center justify-between gap-2 shadow-2xs hover:shadow-md transition-all cursor-grab active:cursor-grabbing select-none group`}
             >
               <div className="flex items-center gap-2 truncate flex-1">
-                <svg
-                  className="w-3.5 h-3.5 text-slate-400 shrink-0 opacity-40 group-hover:opacity-100 transition-opacity"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 8h16M4 16h16"
-                  />
-                </svg>
+             
                 <span
                   className={`text-xs ${config.itemTextColor} truncate flex-1`}
                 >
