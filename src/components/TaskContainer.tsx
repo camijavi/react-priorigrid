@@ -150,12 +150,7 @@ export const TaskContainer: React.FC<TaskContainerProps> = ({
                 All tasks are currently assigned to matrix quadrants, or click <strong>"+"</strong> to add a new task.
               </p>
             </div>
-            <button
-              onClick={onOpenCreateDialog}
-              className="mt-2 px-4 py-2 bg-pink-500 hover:bg-pink-600 text-white font-semibold text-sm rounded-xl transition-colors cursor-pointer"
-            >
-              + Add First Task
-            </button>
+            
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-4">

@@ -141,28 +141,6 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
               Organize your tasks efficiently across priority quadrants.
             </p>
           </div>
-
-          <button
-            onClick={handleOpenCreateDialog}
-            className="self-start sm:self-auto px-5 py-3 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold rounded-xl shadow-lg shadow-pink-500/25 transition-all flex items-center gap-2 cursor-pointer group"
-          >
-            <div className="w-6 h-6 rounded-lg bg-white/20 flex items-center justify-center group-hover:scale-110 transition-transform">
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={3}
-                  d="M12 4v16m8-8H4"
-                />
-              </svg>
-            </div>
-            <span>Create Task</span>
-          </button>
         </div>
 
         {/* 2-Column Grid Layout: TaskContainer (Left) & MatrixContainer (Right) */}
