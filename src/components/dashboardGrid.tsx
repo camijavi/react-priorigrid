@@ -28,6 +28,7 @@ const QUADRANT_CONFIG: Record<
     infoIconColor: string;
     emptyBg: string;
     emptyText: string;
+    scrollbarClass: string
   }
 > = {
   importantUrgent: {
@@ -46,6 +47,7 @@ const QUADRANT_CONFIG: Record<
     infoIconColor: "text-rose-400 hover:text-rose-600",
     emptyBg: "bg-white/60 border-rose-200/80",
     emptyText: "text-rose-400",
+    scrollbarClass: "scrollbar-rose"
   },
   importantNotUrgent: {
     title: "2 - Important & Not Urgent",
@@ -63,6 +65,7 @@ const QUADRANT_CONFIG: Record<
     infoIconColor: "text-amber-400 hover:text-amber-600",
     emptyBg: "bg-white/60 border-amber-200/80",
     emptyText: "text-amber-500",
+    scrollbarClass: "scrollbar-amber",
   },
   notImportantUrgent: {
     title: "3 - Not Important & Urgent",
@@ -80,6 +83,7 @@ const QUADRANT_CONFIG: Record<
     infoIconColor: "text-sky-400 hover:text-sky-600",
     emptyBg: "bg-white/60 border-sky-200/80",
     emptyText: "text-sky-500",
+    scrollbarClass: "scrollbar-sky"
   },
   notImportantNotUrgent: {
     title: "4 - Not Important & Not Urgent",
@@ -97,6 +101,7 @@ const QUADRANT_CONFIG: Record<
     infoIconColor: "text-purple-400 hover:text-purple-600",
     emptyBg: "bg-white/60 border-purple-200/80",
     emptyText: "text-purple-400",
+    scrollbarClass: "scrollbar-purple"
   },
 };
 
@@ -112,10 +117,9 @@ export const Quadrant: React.FC<QuadrantProps> = ({
     QUADRANT_CONFIG[quadrant as Exclude<TaskQuadrant, "empty">] ||
     QUADRANT_CONFIG.importantUrgent;
 
-  // Filter tasks belonging to this quadrant and show ONLY 3 most recent task cards
-  const quadrantTasks = tasks
-    .filter((t) => t.quadrant === quadrant)
-    .slice(0, 3);
+  // Filter tasks belonging to this quadrant  
+  const quadrantTasks = tasks.filter((t) => t.quadrant === quadrant)
+ 
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -176,8 +180,8 @@ export const Quadrant: React.FC<QuadrantProps> = ({
         </div>
       </div>
 
-      {/* Tasks List inside Quadrant (showing ONLY 3 task cards) */}
-      <div className="flex-1 flex flex-col gap-2 min-h-[140px] justify-start">
+      {/* Tasks List inside Quadrant */}
+      <div className={`flex-1 flex flex-col gap-2 min-h-[140px] max-h-[180px] overflow-y-auto pr-1 ${config.scrollbarClass} justify-start`}>
         {quadrantTasks.length === 0 ? (
           <div
             className={`flex-1 flex items-center justify-center p-4 text-center text-xs ${config.emptyText} border border-dashed ${config.emptyBg} rounded-xl`}
