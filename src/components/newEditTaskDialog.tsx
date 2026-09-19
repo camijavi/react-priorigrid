@@ -308,7 +308,7 @@ export const NewEditTaskDialog: React.FC<NewEditTaskDialogProps> = ({
               >
                 <option value="pending">Pending</option>
                 <option value="inprogress">In Progress</option>
-                <option value="archived">Archived</option>
+                <option value="completed">Completed</option>
               </select>
               {errors.status && (
                 <p className="mt-1.5 text-xs font-semibold text-rose-600 flex items-center gap-1.5">

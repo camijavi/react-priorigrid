@@ -1,11 +1,13 @@
 import React from "react";
-import type { TaskModel, TaskQuadrant } from "../models/TaskModel";
+import type { TaskModel, TaskQuadrant, TaskStatus } from "../models/TaskModel";
 import { Quadrant } from "./dashboardGrid";
 
 export interface MatrixContainerProps {
   tasks?: TaskModel[];
   onViewTask?: (task: TaskModel) => void;
   onDropTask?: (taskId: string, targetQuadrant: TaskQuadrant) => void;
+  onDeleteTask?: (taskId:string) => Promise<void> | void;
+  onUpdateStatus?: (taskId: string, status: TaskStatus) => Promise<void> | null;
   className?: string;
 }
 
@@ -20,6 +22,8 @@ export const MatrixContainer: React.FC<MatrixContainerProps> = ({
   tasks = [],
   onViewTask = () => {},
   onDropTask,
+  onDeleteTask,
+  onUpdateStatus,
   className = "",
 }) => {
   return (
@@ -45,6 +49,8 @@ export const MatrixContainer: React.FC<MatrixContainerProps> = ({
             tasks={tasks}
             onViewTask={onViewTask}
             onDropTask={onDropTask}
+            onDeleteTask={onDeleteTask} 
+            onUpdateStatus={onUpdateStatus}
           />
         ))}
       </div>

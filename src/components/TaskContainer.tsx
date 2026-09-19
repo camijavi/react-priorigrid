@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import type { TaskModel, TaskQuadrant } from "../models/TaskModel";
+import type { TaskModel, TaskQuadrant, TaskStatus } from "../models/TaskModel";
 import { TaskCard } from "./taskCard";
 
 export interface TaskContainerProps {

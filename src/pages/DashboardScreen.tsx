@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { TaskService } from "../services/TaskService";
 import type { UserModel } from "../models/UserModel";
-import type { TaskModel, TaskQuadrant } from "../models/TaskModel";
+import type { TaskModel, TaskQuadrant, TaskStatus} from "../models/TaskModel";
 import { NewEditTaskDialog } from "../components/newEditTaskDialog";
 import { TaskContainer } from "../components/TaskContainer";
 import { MatrixContainer } from "../components/MatrixContainer";
@@ -30,6 +30,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
   const [tasks, setTasks] = useState<TaskModel[]>([]);
   const [isLoadingTasks, setIsLoadingTasks] = useState(false);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
+  const [congratsMessage, setCongratsMessage] = useState<string | null>(null);
 
   const fetchTasks = useCallback(async () => {
     if (!user?.id) return;
@@ -47,6 +48,13 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
   useEffect(() => {
     fetchTasks();
   }, [fetchTasks]);
+
+  const showCongratsBanner = (taskTitle: string) => {
+    setCongratsMessage(`You completed "${taskTitle}"! Great job!`);
+    setTimeout(() => {
+      setCongratsMessage(null);
+    }, 4500);
+  };
 
   const handleOpenCreateDialog = () => {
     setTaskToEdit(null);
@@ -73,9 +81,18 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
     setTaskToEdit(null);
   };
 
-  const handleSaveTask = async (
+
+ const handleSaveTask = async (
     taskData: Omit<TaskModel, "id"> | TaskModel,
   ) => {
+    if (taskData.status === "completed") {
+      showCongratsBanner(taskData.title);
+      if ("id" in taskData && taskData.id) {
+        await handleDeleteTask(taskData.id);
+      }
+      return;
+    }
+
     if ("id" in taskData && taskData.id) {
       // Edit mode
       await TaskService.updateTask(taskData.id, taskData);
@@ -89,6 +106,30 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
   const handleDeleteTask = async (taskId: string) => {
     await TaskService.deleteTask(taskId);
     await fetchTasks();
+  };
+
+ const handleUpdateTaskStatus = async (
+    taskId: string,
+    newStatus: TaskStatus
+  ) => {
+    const targetTask = tasks.find((t) => t.id === taskId);
+    const taskTitle = targetTask?.title || "Task";
+
+    if (newStatus === "completed") {
+      showCongratsBanner(taskTitle);
+      await handleDeleteTask(taskId);
+      return; 
+    }
+
+    setTasks((prevTasks) =>
+      prevTasks.map((t) => (t.id === taskId ? { ...t, status: newStatus } : t))
+    );
+    try {
+      await TaskService.updateTask(taskId, { status: newStatus });
+    } catch (error) {
+      console.error("Failed to update task status:", error);
+      await fetchTasks();
+    }
   };
 
   const handleDropTaskOnQuadrant = async (
@@ -122,6 +163,28 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
 
   return (
     <div className="min-h-screen bg-slate-100 font-sans text-slate-800 flex flex-col relative">
+      {/* Big Congratulations Message Toast */}
+      {congratsMessage && (
+        <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 text-white px-6 py-4 rounded-2xl shadow-2xl border border-white/20 flex items-center gap-3 animate-in fade-in slide-in-from-top-4 duration-300">
+          <div className="text-3xl animate-bounce">🎉</div>
+          <div>
+            <h4 className="font-extrabold text-base tracking-tight">
+              Congratulations!
+            </h4>
+            <p className="text-xs text-emerald-100 font-medium">
+              {congratsMessage}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setCongratsMessage(null)}
+            className="ml-4 text-white/80 hover:text-white p-1.5 rounded-lg hover:bg-white/20 transition-colors cursor-pointer"
+          >
+            ✕
+          </button>
+        </div>
+      )}
+      
       {/* Top Navbar */}
       <Navbar
         user={user}
@@ -156,7 +219,13 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
             />
           </div>
           <div className="lg:col-span-9 flex flex-col">
-            <MatrixContainer tasks={tasks} onViewTask={handleViewTask} onDropTask={handleDropTaskOnQuadrant} />
+            <MatrixContainer 
+              tasks={tasks}
+              onViewTask={handleViewTask}
+              onDropTask={handleDropTaskOnQuadrant}
+              onDeleteTask = {handleDeleteTask}
+              onUpdateStatus = {handleUpdateTaskStatus}
+            />
           </div>
         </div>
       </main>
