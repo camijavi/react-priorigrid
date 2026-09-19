@@ -145,7 +145,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
 
         {/* 2-Column Grid Layout: TaskContainer (Left) & MatrixContainer (Right) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
-          <div className="lg:col-span-4 flex flex-col">
+          <div className="lg:col-span-3 flex flex-col">
             <TaskContainer
               tasks={tasks}
               isLoadingTasks={isLoadingTasks}
@@ -155,7 +155,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
               onDropTask = {handleDropTaskOnQuadrant}
             />
           </div>
-          <div className="lg:col-span-8 flex flex-col">
+          <div className="lg:col-span-9 flex flex-col">
             <MatrixContainer tasks={tasks} onViewTask={handleViewTask} onDropTask={handleDropTaskOnQuadrant} />
           </div>
         </div>

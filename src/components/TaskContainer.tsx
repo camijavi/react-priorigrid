@@ -98,7 +98,7 @@ export const TaskContainer: React.FC<TaskContainerProps> = ({
               d="M12 4v16m8-8H4"
             />
           </svg>
-          <span>Add Task</span>
+           
         </button>
       </div>
 
