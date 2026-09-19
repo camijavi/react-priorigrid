@@ -33,7 +33,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
         className="min-h-screen w-full flex items-center justify-center p-4 font-sans text-gray-800"
         style={{
           background:
-            "linear-gradient(135deg, #ffea85 0%, #ff7e5f 35%, #feb47b 65%, #ff416c 100%)",
+            "linear-gradient(135deg, #ff7e5f 0%, #feb47b 20%, #ff5252 45%, #e91e63 75%, #880e4f 100%)",
         }}
       >
         <div

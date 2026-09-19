@@ -5,12 +5,12 @@ import prioriGridLogo from "../assets/prioriGridLogo.png"
 
 export interface NavbarProps {
     user?: UserModel | null;
-    onOpenCreateDialog: () => void;
+    onOpenCreateDialog?: () => void;
     onLogout?: () => void;
 }
 
 
-export const Navbar: React.FC<NavbarProps> = ({user,onOpenCreateDialog, onLogout}) => {
+export const Navbar: React.FC<NavbarProps> = ({user, onOpenCreateDialog: _onOpenCreateDialog, onLogout}) => {
    const handleSignOut = async () => {
       try {
         await UserService.logout();

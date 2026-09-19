@@ -7,7 +7,7 @@ export interface MatrixContainerProps {
   onViewTask?: (task: TaskModel) => void;
   onDropTask?: (taskId: string, targetQuadrant: TaskQuadrant) => void;
   onDeleteTask?: (taskId:string) => Promise<void> | void;
-  onUpdateStatus?: (taskId: string, status: TaskStatus) => Promise<void> | null;
+  onUpdateStatus?: (taskId: string, status: TaskStatus) => Promise<void> | void;
   className?: string;
 }
 
