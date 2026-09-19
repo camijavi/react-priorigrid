@@ -22,7 +22,7 @@ const QUADRANT_CONFIG: Record<
     badgeBg: string;
     badgeText: string;
     titleColor: string;
-    eyeColor: string;
+ 
     itemBg: string;
     itemBorder: string;
     itemHoverBorder: string;
@@ -41,7 +41,7 @@ const QUADRANT_CONFIG: Record<
     badgeBg: "bg-rose-500 text-white font-bold shadow-xs",
     badgeText: "Q1",
     titleColor: "text-rose-950 font-extrabold",
-    eyeColor: "text-rose-400 hover:text-rose-600",
+    
     itemBg: "bg-white/90",
     itemBorder: "border-rose-200/90",
     itemHoverBorder: "hover:border-rose-400",
@@ -59,7 +59,7 @@ const QUADRANT_CONFIG: Record<
     badgeBg: "bg-amber-500 text-white font-bold shadow-xs",
     badgeText: "Q2",
     titleColor: "text-amber-950 font-extrabold",
-    eyeColor: "text-amber-400 hover:text-amber-600",
+ 
     itemBg: "bg-white/90",
     itemBorder: "border-amber-200/90",
     itemHoverBorder: "hover:border-amber-400",
@@ -77,7 +77,7 @@ const QUADRANT_CONFIG: Record<
     badgeBg: "bg-sky-500 text-white font-bold shadow-xs",
     badgeText: "Q3",
     titleColor: "text-sky-950 font-extrabold",
-    eyeColor: "text-sky-400 hover:text-sky-600",
+ 
     itemBg: "bg-white/90",
     itemBorder: "border-sky-200/90",
     itemHoverBorder: "hover:border-sky-400",
@@ -95,7 +95,7 @@ const QUADRANT_CONFIG: Record<
     badgeBg: "bg-purple-500 text-white font-bold shadow-xs",
     badgeText: "Q4",
     titleColor: "text-purple-950 font-extrabold",
-    eyeColor: "text-purple-400 hover:text-purple-600",
+  
     itemBg: "bg-white/90",
     itemBorder: "border-purple-200/90",
     itemHoverBorder: "hover:border-purple-400",
@@ -465,34 +465,7 @@ export const Quadrant: React.FC<QuadrantProps> = ({
           </h4>
         </div>
 
-        {/* Eye Icon (No Functionality) */}
-        <button
-          type="button"
-          tabIndex={-1}
-          className={`${config.eyeColor} p-1 rounded-lg transition-colors cursor-default`}
-          title="View Quadrant"
-          aria-label="View Quadrant"
-        >
-          <svg
-            className="w-4 h-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-            />
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-            />
-          </svg>
-        </button>
+         
       </div>
 
       {/* Tasks List inside Quadrant with custom color-matched scrollbar */}
