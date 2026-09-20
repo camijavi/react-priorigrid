@@ -22,7 +22,6 @@ const QUADRANT_CONFIG: Record<
     badgeBg: string;
     badgeText: string;
     titleColor: string;
- 
     itemBg: string;
     itemBorder: string;
     itemHoverBorder: string;
@@ -30,7 +29,8 @@ const QUADRANT_CONFIG: Record<
     infoIconColor: string;
     emptyBg: string;
     emptyText: string;
-    scrollbarClass: string
+    scrollbarClass: string;
+    emptyDescription: string
   }
 > = {
   importantUrgent: {
@@ -41,7 +41,7 @@ const QUADRANT_CONFIG: Record<
     badgeBg: "bg-rose-500 text-white font-bold shadow-xs",
     badgeText: "Q1",
     titleColor: "text-rose-950 font-extrabold",
-    
+    emptyDescription: "Critical and time-sensitive. Add your pressing deadlines here.",
     itemBg: "bg-white/90",
     itemBorder: "border-rose-200/90",
     itemHoverBorder: "hover:border-rose-400",
@@ -59,7 +59,7 @@ const QUADRANT_CONFIG: Record<
     badgeBg: "bg-amber-500 text-white font-bold shadow-xs",
     badgeText: "Q2",
     titleColor: "text-amber-950 font-extrabold",
- 
+    emptyDescription: "High value, low pressure. Add long-term goals and proactive work here.",
     itemBg: "bg-white/90",
     itemBorder: "border-amber-200/90",
     itemHoverBorder: "hover:border-amber-400",
@@ -77,7 +77,7 @@ const QUADRANT_CONFIG: Record<
     badgeBg: "bg-sky-500 text-white font-bold shadow-xs",
     badgeText: "Q3",
     titleColor: "text-sky-950 font-extrabold",
- 
+    emptyDescription: "Urgent but less critical. Track interruptions or tasks to delegate.",
     itemBg: "bg-white/90",
     itemBorder: "border-sky-200/90",
     itemHoverBorder: "hover:border-sky-400",
@@ -95,7 +95,7 @@ const QUADRANT_CONFIG: Record<
     badgeBg: "bg-purple-500 text-white font-bold shadow-xs",
     badgeText: "Q4",
     titleColor: "text-purple-950 font-extrabold",
-  
+    emptyDescription: "Low value time-wasters. Track distractions you want to drop.",
     itemBg: "bg-white/90",
     itemBorder: "border-purple-200/90",
     itemHoverBorder: "hover:border-purple-400",
@@ -476,7 +476,7 @@ export const Quadrant: React.FC<QuadrantProps> = ({
           <div
             className={`flex-1 flex items-center justify-center p-4 text-center text-xs ${config.emptyText} border border-dashed ${config.emptyBg} rounded-xl`}
           >
-            No tasks in this quadrant
+            {config.emptyDescription}
           </div>
         ) : (
           quadrantTasks.map((task) => (

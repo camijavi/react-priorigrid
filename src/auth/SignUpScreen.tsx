@@ -3,6 +3,7 @@ import { UserService } from "../services/UserService";
 import type { UserModel } from "../models/UserModel";
 import navarroLogo from "../assets/navarroweb-logo.png";
 import prioriGridLogo from "../assets/prioriGridLogo.png";
+import ButterflyCursorBackground from "../components/effects/butterflyCursorBg";
 
 interface SignUpScreenProps {
   onSuccess?: (user: UserModel) => void;
@@ -109,14 +110,15 @@ export const SignUpScreen: React.FC<SignUpScreenProps> = ({
 
   return (
     <div
-      className="min-h-screen w-full flex items-center justify-center p-4 sm:p-6 font-sans"
+      className="relative min-h-screen w-full flex items-center justify-center p-4 sm:p-6 font-sans overflow-hidden"
       style={{
         background:
           "linear-gradient(135deg, #ff7e5f 0%, #feb47b 20%, #ff5252 45%, #e91e63 75%, #880e4f 100%)",
       }}
     >
+      <ButterflyCursorBackground />
       <div
-        className="w-full max-w-md p-8 sm:p-10 flex flex-col gap-6 rounded-3xl shadow-2xl transition-all duration-300"
+        className="relative z-10 w-full max-w-md p-8 sm:p-10 flex flex-col gap-6 rounded-3xl shadow-2xl transition-all duration-300"
         style={{
           background: "rgba(255, 255, 255, 0.85)",
           backdropFilter: "blur(16px)",

@@ -6,6 +6,7 @@ import { NewEditTaskDialog } from "../components/newEditTaskDialog";
 import { TaskContainer } from "../components/TaskContainer";
 import { MatrixContainer } from "../components/MatrixContainer";
 import { Navbar } from "../components/Navbar";
+import ButterflyCelebration from "../components/effects/butterflyCelebration";
 
 const QUADRANT_POSITION_MAP: Record<TaskQuadrant, number> = {
   empty:0,
@@ -165,24 +166,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
     <div className="min-h-screen bg-slate-100 font-sans text-slate-800 flex flex-col relative">
       {/* Big Congratulations Message Toast */}
       {congratsMessage && (
-        <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 text-white px-6 py-4 rounded-2xl shadow-2xl border border-white/20 flex items-center gap-3 animate-in fade-in slide-in-from-top-4 duration-300">
-          <div className="text-3xl animate-bounce">🎉</div>
-          <div>
-            <h4 className="font-extrabold text-base tracking-tight">
-              Congratulations!
-            </h4>
-            <p className="text-xs text-emerald-100 font-medium">
-              {congratsMessage}
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={() => setCongratsMessage(null)}
-            className="ml-4 text-white/80 hover:text-white p-1.5 rounded-lg hover:bg-white/20 transition-colors cursor-pointer"
-          >
-            ✕
-          </button>
-        </div>
+        <ButterflyCelebration message={congratsMessage} onClose={()=> setCongratsMessage(null)}/>
       )}
       
       {/* Top Navbar */}
@@ -198,10 +182,10 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h2 className="text-2xl font-bold text-slate-900">
-              Welcome to your Dashboard!
+              Your Command Center
             </h2>
             <p className="text-slate-600 text-sm mt-1">
-              Organize your tasks efficiently across priority quadrants.
+              Drag, drop, and conquer your to-do list using the Eisenhower method.
             </p>
           </div>
         </div>
