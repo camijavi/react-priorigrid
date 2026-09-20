@@ -33,9 +33,9 @@ export const MatrixContainer: React.FC<MatrixContainerProps> = ({
       {/* Header Bar */}
       <div className="flex items-center justify-between border-b border-slate-100 pb-4">
         <div>
-          <h3 className="text-lg font-bold text-slate-900">Priority Matrix</h3>
+          <h3 className="text-lg font-bold text-slate-900">Your Priority Grid</h3>
           <p className="text-xs text-slate-500 mt-0.5">
-            4-Quadrant Eisenhower priority matrix overview.
+            A visual breakdown of what needs your attention right now.
           </p>
         </div>
       </div>
