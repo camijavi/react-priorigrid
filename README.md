@@ -2,7 +2,7 @@
 
 A sleek, interactive task management web application designed to help you prioritize your workload using the Eisenhower Method.
 
-## 🚀 Live Demo
+## 🚀 [Live Demo] (https://priorigrid.navarroweb.net/)
 
 You can try out the application using the following demo credentials:
 
