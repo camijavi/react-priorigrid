@@ -7,12 +7,10 @@ import ButterflyCursorBackground from "../components/effects/butterflyCursorBg";
 
 interface SignInScreenProps {
   onSuccess?: (user: UserModel) => void;
-  onNavigateToSignUp?: () => void;
 }
 
 export const SignInScreen: React.FC<SignInScreenProps> = ({
   onSuccess,
-  onNavigateToSignUp,
 }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -292,18 +290,6 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
           </button>
         </form>
 
-        {onNavigateToSignUp && (
-          <div className="text-center mt-1 text-sm text-slate-600 font-medium">
-            Don't have an account?{" "}
-            <button
-              type="button"
-              onClick={onNavigateToSignUp}
-              className="font-bold text-pink-600 hover:text-pink-700 hover:underline focus:outline-none cursor-pointer transition-colors"
-            >
-              Sign Up
-            </button>
-          </div>
-        )}
 
         {/* Social & Company Links */}
         <div className="pt-4 border-t border-slate-200/80 flex flex-col items-center gap-2.5">

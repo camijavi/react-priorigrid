@@ -10,8 +10,6 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase";
 import { UserService } from "./services/UserService";
 import type { UserModel } from "./models/UserModel";
-
-import SignUpScreen from "./auth/SignUpScreen";
 import SignInScreen from "./auth/SignInScreen";
 import DashboardScreen from "./pages/DashboardScreen";
 
@@ -74,7 +72,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/signup" replace />;
+    return <Navigate to="/signin" replace />;
   }
 
   return <>{children}</>;
@@ -123,14 +121,14 @@ function AppContent() {
     return () => unsubscribe();
   }, []);
 
-  const handleLoginOrRegisterSuccess = (user: UserModel) => {
+  const handleLoginSuccess = (user: UserModel) => {
     setCurrentUser(user);
     navigate("/dashboard");
   };
 
   const handleLogout = () => {
     setCurrentUser(null);
-    navigate("/signup");
+    navigate("/signin");
   };
 
   const isAuthenticated = !!currentUser;
@@ -138,29 +136,12 @@ function AppContent() {
   return (
     <Routes>
       <Route
-        path="/signup"
-        element={
-          isAuthenticated ? (
-            <Navigate to="/dashboard" replace />
-          ) : (
-            <SignUpScreen
-              onSuccess={handleLoginOrRegisterSuccess}
-              onNavigateToLogin={() => navigate("/signin")}
-            />
-          )
-        }
-      />
-
-      <Route
         path="/signin"
         element={
           isAuthenticated ? (
             <Navigate to="/dashboard" replace />
           ) : (
-            <SignInScreen
-              onSuccess={handleLoginOrRegisterSuccess}
-              onNavigateToSignUp={() => navigate("/signup")}
-            />
+            <SignInScreen onSuccess={handleLoginSuccess} />
           )
         }
       />
@@ -185,7 +166,7 @@ function AppContent() {
           ) : isAuthenticated ? (
             <Navigate to="/dashboard" replace />
           ) : (
-            <Navigate to="/signup" replace />
+            <Navigate to="/signin" replace />
           )
         }
       />
