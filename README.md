@@ -37,5 +37,5 @@ This project is built with a modern, fast, and scalable stack:
 
 ---
 
-*Built with 🤍 by [Camila Javiera](navarroweb.net).*
+*Built with 🤍 by [Camila Javiera](https://www.linkedin.com/in/camila-javiera-navarro).*
 
