@@ -89,12 +89,19 @@ export class TaskService {
     static async updateTask(taskId: string, data: Partial<Omit<TaskModel, "id">>): Promise<void> {
         const taskDocRef = doc(db, this.TASKS_COLLECTION, taskId);
 
-        const updateData: Record<string, any> = { ...data };
-        if (data.dueDate) {
-            updateData.dueDate = Timestamp.fromDate(new Date(data.dueDate));
+        const updateData: Record<string, any> = {};
 
-            await updateDoc(taskDocRef, updateData);
-        }
+        Object.entries(data).forEach(([key, value]) => {
+            if (value !== undefined) {
+                if (key === "dueDate" && value) {
+                    updateData.dueDate = Timestamp.fromDate(new Date(value as any));
+                } else {
+                    updateData[key] = value;
+                }
+            }
+        });
+
+        await updateDoc(taskDocRef, updateData);
     }
 
     static async deleteTask(taskId: string): Promise<void> {
